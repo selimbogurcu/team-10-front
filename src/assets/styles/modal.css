@@ -1,0 +1,163 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Arka plan opaklığı artırıldı */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.modal-overlay.fadeOut {
+    animation: fadeOut 0.4s ease-in forwards;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 16px; /* Daha yuvarlak köşeler */
+    width: 350px;
+    max-width: 90%;
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Gölge efekti artırıldı */
+    animation: slideIn 0.4s ease-out;
+    transform-origin: top center; /* Kaynağın üst merkezden gelmesi için */
+}
+
+.modal-content.slideOut {
+    animation: slideOut 0.4s ease-in forwards;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover {
+    color: #007bff; /* Hover rengi eklendi */
+}
+
+/* Sekme Tasarımı */
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab {
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #777;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.tab.active {
+    color: #000;
+    border-bottom: 3px solid #007bff; /* Aktif sekme vurgusu */
+}
+
+/* Form Elemanları */
+input[type="email"], input[type="password"], input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Daha yuvarlak köşeler */
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus {
+    border-color: #007bff; /* Focus rengi */
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2); /* Focus gölgesi */
+}
+
+.forgot-password {
+    font-size: 0.6rem;
+    color: #007bff;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: block;
+}
+
+
+.sign-in-button, .register-button {
+    padding: 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.sign-in-button:hover, .register-button:hover {
+    background-color: #0056b3; /* Hover efekti */
+}
+
+/* Sosyal Medya Butonları */
+.social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.social-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    font-weight: bold;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Daha yuvarlak köşeler */
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.social-button:hover {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Animasyonlar */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes slideIn {
+    from { transform: scale(0.9) translateY(-20px); }
+    to { transform: scale(1) translateY(0); }
+}
+
+@keyframes slideOut {
+    from { transform: scale(1) translateY(0); }
+    to { transform: scale(0.9) translateY(-20px); }
+}
