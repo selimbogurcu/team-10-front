@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import CategoryCarousel from '../components/CategoryCarousel';
 import Footer from '../components/Footer';
@@ -10,6 +11,8 @@ import homeLivingImg from '../assets/images/home.webp';
 import fashionImg from '../assets/images/fashion.webp';
 
 const Home = () => {
+    const navigate = useNavigate();
+
     const categories = [
         { id: 1, title: 'Electronics', description: 'Discover the latest in technology with exclusive offers!', image: electronicsImg },
         { id: 2, title: 'Clothing', description: 'Fresh styles and top brands available now!', image: clothingImg },
@@ -26,6 +29,10 @@ const Home = () => {
         { id: 6, name: 'Product 6', price: '$220', image: 'product6.jpg', discount: 20 },
     ];
 
+    const handleProductClick = (id) => {
+        navigate(`/product/${id}`);
+    };
+
     return (
         <div className="home">
             <Navbar />
@@ -36,11 +43,15 @@ const Home = () => {
                 <h2>Featured Products</h2>
                 <div className="product-grid">
                     {featuredProducts.map((product) => (
-                        <div className="product-card" key={product.id}>
+                        <div
+                            className="product-card"
+                            key={product.id}
+                            onClick={() => handleProductClick(product.id)}
+                        >
                             <img src={product.image} alt={product.name} />
                             <h3>{product.name}</h3>
                             <p>{product.price}</p>
-                            <button>Buy Now</button>
+                            <button>View Details</button>
                         </div>
                     ))}
                 </div>
