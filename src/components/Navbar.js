@@ -1,24 +1,29 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaUser, FaHeart, FaShoppingBag } from 'react-icons/fa';
 import UserModal from './UserModal';
-import '../assets/styles/navbar.css'; 
-
+import '../assets/styles/navbar.css';
 
 const Navbar = () => {
     const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     const toggleUserModal = () => setIsUserModalOpen(!isUserModalOpen);
+
+    const handleCategoryClick = (category) => {
+        navigate(`/category/${category}`);
+    };
 
     return (
         <nav className="navbar">
             <div className="navbar-content">
-                <div className="logo">TEAM10</div>
+                <div className="logo" onClick={() => navigate('/')}>TEAM10</div> {/* Navigate to home on click */}
                 <ul className="nav-links">
-                    <li>Electronics</li>
-                    <li>Home & Living</li>
-                    <li>Sports & Outdoors</li>
-                    <li>Books</li>
-                    <li>Fashion</li>
+                    <li onClick={() => handleCategoryClick('Electronics')}>Electronics</li>
+                    <li onClick={() => handleCategoryClick('Home & Living')}>Home & Living</li>
+                    <li onClick={() => handleCategoryClick('Sports & Outdoors')}>Sports & Outdoors</li>
+                    <li onClick={() => handleCategoryClick('Books')}>Books</li>
+                    <li onClick={() => handleCategoryClick('Fashion')}>Fashion</li>
                 </ul>
                 <div className="search-container">
                     <input

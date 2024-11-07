@@ -1,0 +1,172 @@
+/* Main layout */
+.product-page {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 250px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h3 {
+    font-size: 1rem;
+    margin-top: 20px;
+    color: #333;
+}
+
+.tags button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filter-options label {
+    display: block;
+    font-size: 0.9rem;
+    color: #555;
+    margin: 10px 0;
+}
+
+/* Product list container */
+.product-list-container {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Sort options styling */
+.sort-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.sort-options button {
+    background-color: #eee;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sort-options button.active {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Product grid styling */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    justify-content: center;
+}
+
+.product-card {
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+}
+
+.product-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Product name styling */
+.product-card h3 {
+    font-size: 1rem;
+    margin: 10px 0;
+    color: #333;
+}
+
+/* Product description styling */
+.product-card p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Discount and pricing details */
+.price-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* Stylish discount badge */
+.discount-tag {
+    font-size: 0.9rem;
+    color: #ff3333;
+    font-weight: bold;
+}
+
+/* Original price with strikethrough */
+.original-price {
+    font-size: 0.9rem;
+    color: #888;
+    text-decoration: line-through;
+}
+
+/* Discounted price styled in red and bold */
+.discounted-price {
+    font-size: 1rem;
+    color: #d9534f; /* Dark red color */
+    font-weight: bold;
+}
+
+/* Pagination styling */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.pagination button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: #0056b3;
+}
+
+.pagination button.active {
+    background-color: #0056b3;
+    font-weight: bold;
+}
+
+.pagination button[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
