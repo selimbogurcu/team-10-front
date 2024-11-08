@@ -5,13 +5,60 @@ import '../assets/styles/modal.css';
 const UserModal = ({ onClose }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [isClosing, setIsClosing] = useState(false);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+    });
 
     const handleClose = () => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
             onClose();
-        }, 300); // Animasyon süresi ile uyumlu (300ms)
+        }, 200);
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const url = isLogin 
+            ? 'http://localhost:1337/api/auth/login' 
+            : 'http://localhost:1337/api/auth/register';
+
+        const payload = isLogin 
+            ? { email: formData.email, password: formData.password }
+            : {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+                role: 'User',         // Default role
+                tax_id: '-',          // Default tax ID
+                address: '-'          // Default address
+            };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert(isLogin ? 'Login successful!' : 'Registration successful!');
+                handleClose(); // Close modal on success
+            } else {
+                alert(data.error || 'An error occurred');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.');
+        }
     };
 
     return (
@@ -33,19 +80,54 @@ const UserModal = ({ onClose }) => {
                     </span>
                 </div>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                     {isLogin ? (
                         <>
-                            <input type="email" placeholder="Email address" required />
-                            <input type="password" placeholder="Password" required />
+                            <input 
+                                type="email" 
+                                name="email" 
+                                placeholder="Email address" 
+                                value={formData.email} 
+                                onChange={handleChange} 
+                                required 
+                            />
+                            <input 
+                                type="password" 
+                                name="password" 
+                                placeholder="Password" 
+                                value={formData.password} 
+                                onChange={handleChange} 
+                                required 
+                            />
                             <a href="#" className="forgot-password">Forgot your password?</a>
                             <button type="submit" className="sign-in-button">Sign In</button>
                         </>
                     ) : (
                         <>
-                            <input type="text" placeholder="Username" required />
-                            <input type="email" placeholder="Email address" required />
-                            <input type="password" placeholder="Password" required />
+                            <input 
+                                type="text" 
+                                name="name" 
+                                placeholder="Username" 
+                                value={formData.name} 
+                                onChange={handleChange} 
+                                required 
+                            />
+                            <input 
+                                type="email" 
+                                name="email" 
+                                placeholder="Email address" 
+                                value={formData.email} 
+                                onChange={handleChange} 
+                                required 
+                            />
+                            <input 
+                                type="password" 
+                                name="password" 
+                                placeholder="Password" 
+                                value={formData.password} 
+                                onChange={handleChange} 
+                                required 
+                            />
                             <button type="submit" className="register-button">Register</button>
                         </>
                     )}
