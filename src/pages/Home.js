@@ -48,7 +48,7 @@ const Home = () => {
                             key={product.id}
                             onClick={() => handleProductClick(product.id)}
                         >
-                            <img src={product.image} alt={product.name} />
+                            <img src="https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/150/150/productimage/125079015/125079015_0_MC/8ee920d0.png" />
                             <h3>{product.name}</h3>
                             <p>{product.price}</p>
                             <button>View Details</button>
