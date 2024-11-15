@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContexts'; // AuthContext'i içe aktarın
 import { FaGoogle, FaApple, FaFacebook } from 'react-icons/fa';
 import '../assets/styles/modal.css'; 
 
 const UserModal = ({ onClose }) => {
+    const { login } = useAuth(); // AuthContext'ten login fonksiyonunu alın
     const [isLogin, setIsLogin] = useState(true);
     const [isClosing, setIsClosing] = useState(false);
     const [formData, setFormData] = useState({
@@ -26,11 +28,12 @@ const UserModal = ({ onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         const url = isLogin 
             ? 'http://localhost:1337/api/auth/login' 
             : 'http://localhost:1337/api/auth/register';
 
-        const payload = isLogin 
+        const payload = isLogin  
             ? { email: formData.email, password: formData.password }
             : {
                 name: formData.name,
@@ -45,28 +48,31 @@ const UserModal = ({ onClose }) => {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
             });
             const data = await response.json();
-            
+
             if (response.ok) {
                 alert(isLogin ? 'Login successful!' : 'Registration successful!');
-                handleClose(); // Close modal on success
+                login(data.token); // AuthContext'e token gönder
+                handleClose();
             } else {
                 alert(data.error || 'An error occurred');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred. Please try again later.');
+            alert('An error occurred.');
         }
     };
 
     return (
         <div className={`modal-overlay ${isClosing ? 'fadeOut' : ''}`} onClick={handleClose}>
-            <div className={`modal-content ${isClosing ? 'slideOut' : ''}`} onClick={(e) => e.stopPropagation()}>
+            <div
+                className={`modal-content ${isClosing ? 'slideOut' : ''}`}
+            >
                 <button className="close-button" onClick={handleClose}>✕</button>
-                <h2>Come on in</h2>
-                
+                <h2>{isLogin ? 'Welcome Back!' : 'Create Your Account'}</h2>
+
                 <div className="tabs">
                     <span 
                         className={`tab ${isLogin ? 'active' : ''}`} 
@@ -140,7 +146,6 @@ const UserModal = ({ onClose }) => {
                     <button className="social-button apple"><FaApple /> Continue with Apple</button>
                     <button className="social-button facebook"><FaFacebook /> Continue with Facebook</button>
                 </div>
-
             </div>
         </div>
     );

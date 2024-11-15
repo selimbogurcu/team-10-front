@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaHeart, FaShoppingBag } from 'react-icons/fa';
 import UserModal from './UserModal';
+import { useAuth } from '../contexts/AuthContexts'; // AuthContext'i içe aktarın
 import '../assets/styles/navbar.css';
 
 const Navbar = () => {
@@ -9,41 +10,29 @@ const Navbar = () => {
     const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
     const navigate = useNavigate();
     const cartDropdownRef = useRef(null);
+    const { token } = useAuth(); // AuthContext'ten token alın
 
     const toggleUserModal = () => setIsUserModalOpen(!isUserModalOpen);
     const toggleCartDropdown = () => setIsCartDropdownOpen(!isCartDropdownOpen);
 
-    const handleCategoryClick = (category) => {
-        navigate(`/category/${category}`);
+    const handleUserIconClick = () => {
+        if (token) {
+            navigate('/profile'); // Token varsa profil sayfasına yönlendir
+        } else {
+            toggleUserModal(); // Token yoksa modal aç
+        }
     };
-
-    // Close dropdown when clicking outside of it
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (cartDropdownRef.current && !cartDropdownRef.current.contains(event.target)) {
-                setIsCartDropdownOpen(false);
-            }
-        };
-
-        // Add event listener for clicks outside the cart dropdown
-        document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            // Remove event listener on cleanup
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
 
     return (
         <nav className="navbar">
             <div className="navbar-content">
                 <div className="logo" onClick={() => navigate('/')}>TEAM10</div>
                 <ul className="nav-links">
-                    <li onClick={() => handleCategoryClick('Electronics')}>Electronics</li>
-                    <li onClick={() => handleCategoryClick('Home & Living')}>Home & Living</li>
-                    <li onClick={() => handleCategoryClick('Sports & Outdoors')}>Sports & Outdoors</li>
-                    <li onClick={() => handleCategoryClick('Books')}>Books</li>
-                    <li onClick={() => handleCategoryClick('Fashion')}>Fashion</li>
+                    <li onClick={() => navigate('/category/Electronics')}>Electronics</li>
+                    <li onClick={() => navigate('/category/Home & Living')}>Home & Living</li>
+                    <li onClick={() => navigate('/category/Sports & Outdoors')}>Sports & Outdoors</li>
+                    <li onClick={() => navigate('/category/Books')}>Books</li>
+                    <li onClick={() => navigate('/category/Fashion')}>Fashion</li>
                 </ul>
                 <div className="search-container">
                     <input
@@ -53,14 +42,12 @@ const Navbar = () => {
                     />
                 </div>
                 <div className="nav-icons">
-                    <FaUser className="icon" onClick={toggleUserModal} />
+                    <FaUser className="icon" onClick={handleUserIconClick} />
                     <FaHeart className="icon" />
                     <FaShoppingBag className="icon" onClick={toggleCartDropdown} />
                 </div>
             </div>
             {isUserModalOpen && <UserModal onClose={toggleUserModal} />}
-
-            {/* Cart Dropdown */}
             {isCartDropdownOpen && (
                 <div className="cart-dropdown" ref={cartDropdownRef}>
                     <h3>Cart</h3>

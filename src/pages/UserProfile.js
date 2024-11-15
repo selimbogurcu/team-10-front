@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-//import '../assets/styles/userProfile.css';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import React from 'react';
+import { useAuth } from '../contexts/AuthContexts';
 
-const ProductList = () => {
-    const navigate = useNavigate();
+const UserProfile = () => {
+    const { token, logout } = useAuth(); // AuthContext'ten token ve logout alın
 
     return (
         <div>
-            <Navbar />
-            <div className="user-profile-page">
-                
-            </div>
-            <Footer />
+            <h1>User Profile</h1>
+            {token ? (
+                <div>
+                    <p>Welcome! Your token: {token}</p>
+                    <button onClick={logout}>Logout</button>
+                </div>
+            ) : (
+                <p>Please log in to view your profile.</p>
+            )}
         </div>
     );
 };
 
-export default ProductList;
+export default UserProfile;
