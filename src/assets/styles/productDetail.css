@@ -17,6 +17,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative; /* Kalp ikonu için gerekli */
+    overflow: hidden; /* Taşan içeriği gizler */
 }
 
 .product-image {
@@ -89,6 +91,32 @@
     box-shadow: 0 4px 10px rgba(0, 91, 187, 0.3);
 }
 
+/* Favorite Icon Styles */
+.favorite-icon {
+    position: absolute; /* Fotoğrafın sağ üst köşesine konumlandırma */
+    top: 10px;
+    right: 10px;
+    font-size: 24px; /* Kalp boyutu */
+    cursor: pointer;
+    z-index: 10; /* Üst katmanda kalması için */
+    transition: transform 0.3s ease, font-size 0.3s ease;
+}
+
+.favorite-icon:hover {
+    font-size: 28px; /* Hover durumunda büyüme */
+}
+
+.product-image-section:hover .favorite-icon {
+    transform: scale(1.2); /* Fotoğrafla birlikte büyüme */
+}
+
+.favorite-icon:hover::after {
+    content: ' Favorilere Ekle'; /* Kalp ikonunun yanında yazı */
+    font-size: 14px;
+    color: #000;
+    margin-left: 5px;
+}
+
 /* Latest Reviews Section */
 .latest-reviews {
     margin-top: 40px;
@@ -152,4 +180,29 @@
 
 .review-date {
     font-style: italic;
+}
+
+/* Size Options */
+.size-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.size-button {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    background-color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.size-button.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.size-button:hover {
+    background-color: #f0f0f0;
 }
