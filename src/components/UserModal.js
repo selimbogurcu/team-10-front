@@ -69,6 +69,7 @@ const UserModal = ({ onClose }) => {
         <div className={`modal-overlay ${isClosing ? 'fadeOut' : ''}`} onClick={handleClose}>
             <div
                 className={`modal-content ${isClosing ? 'slideOut' : ''}`}
+                onClick={(e) => e.stopPropagation()}
             >
                 <button className="close-button" onClick={handleClose}>✕</button>
                 <h2>{isLogin ? 'Welcome Back!' : 'Create Your Account'}</h2>
