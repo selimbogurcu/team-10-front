@@ -1,10 +1,15 @@
+/* General Styles */
 .product-detail-page {
     max-width: 100%;
     margin: 0 auto;
+    background-color: #f8f9fa; /* Light background for contrast */
+    font-family: 'Arial', sans-serif;
 }
 
+/* Product Detail Layout */
 .product-detail {
     display: flex;
+    flex-wrap: wrap; /* Responsive handling */
     gap: 20px;
     background-color: #fff;
     padding: 20px;
@@ -12,8 +17,9 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Image Section */
 .product-image-section {
-    flex: 1;
+    flex: 1 1 400px; /* Flexible width with a minimum size */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,12 +28,11 @@
 .product-image {
     width: 100%;
     max-width: 400px;
-    height: 400px;
+    height: auto; /* Maintain aspect ratio */
     object-fit: cover;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, opacity 0.3s ease;
-    opacity: 1;
 }
 
 .product-image-section:hover .product-image {
@@ -35,8 +40,9 @@
     opacity: 0.9;
 }
 
+/* Product Information Section */
 .product-info-section {
-    flex: 1;
+    flex: 1 1 400px; /* Flexible width with a minimum size */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -47,6 +53,7 @@
     font-size: 2rem;
     color: #333;
     margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .product-model,
@@ -55,8 +62,7 @@
 .product-stock,
 .product-warranty,
 .product-distributor,
-.product-category,
-.product-created-at {
+.product-dimensions {
     font-size: 1rem;
     color: #555;
     margin: 5px 0;
@@ -65,21 +71,25 @@
 .product-price {
     font-size: 1.5rem;
     color: #007bff;
+    font-weight: bold;
+    margin: 15px 0;
 }
 
 .product-description {
     font-size: 1rem;
     color: #555;
+    line-height: 1.5;
     margin: 10px 0 20px;
 }
 
 .add-to-cart-button {
     background-color: #007bff;
     color: #fff;
-    padding: 10px 18px;
+    padding: 12px 20px;
     border: none;
     border-radius: 20px;
     font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -89,25 +99,57 @@
     box-shadow: 0 4px 10px rgba(0, 91, 187, 0.3);
 }
 
+/* Dropdown Styles */
+.dropdowns {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.dropdown label {
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.dropdown select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #555;
+    transition: border-color 0.3s ease;
+}
+
+.dropdown select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
 /* Latest Reviews Section */
 .latest-reviews {
     margin-top: 40px;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: #f1f3f5; /* Slightly lighter for differentiation */
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .latest-reviews h2 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: #333;
     margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
 }
 
 .reviews-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
-    justify-content: space-around;
+    justify-content: center; /* Center align reviews */
 }
 
 .review-card {
@@ -115,11 +157,17 @@
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 30%;
+    width: calc(33.333% - 20px); /* Responsive width */
+    max-width: 300px; /* Limit card size */
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
 }
 
 .review-rating {
@@ -138,6 +186,7 @@
 .review-body {
     font-size: 0.9rem;
     color: #555;
+    line-height: 1.4;
     margin: 10px 0;
 }
 
@@ -152,4 +201,26 @@
 
 .review-date {
     font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .product-detail {
+        flex-direction: column;
+    }
+
+    .product-image-section,
+    .product-info-section {
+        flex: 1 1 100%; /* Full width on smaller screens */
+    }
+
+    .review-card {
+        width: calc(50% - 20px); /* Two cards per row on smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .review-card {
+        width: 100%; /* Single card per row on extra-small screens */
+    }
 }

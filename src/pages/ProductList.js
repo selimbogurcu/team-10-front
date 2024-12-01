@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../assets/styles/productList.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-const ProductList = ({ categoryId }) => {
+const ProductList = () => {
   const navigate = useNavigate();
+  const { categoryName } = useParams();
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
@@ -13,21 +14,46 @@ const ProductList = ({ categoryId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Category mapper
+  const categoryMapper = [
+    { category_id: 1, category_name: "MobilePhone" },
+    { category_id: 2, category_name: "Television" },
+    { category_id: 3, category_name: "Notebook" },
+    { category_id: 4, category_name: "Tablet" },
+  ];
+
+  // Function to get category ID by name
+  const getCategoryID = (categoryName) => {
+    const category = categoryMapper.find(
+      (cat) => cat.category_name === categoryName
+    );
+    return category ? category.category_id : null;
+  };
+
   useEffect(() => {
     const fetchProducts = async () => {
       setIsLoading(true);
       setError(null);
+
+      const categoryId = getCategoryID(categoryName); // Get category ID from the mapper
+      if (!categoryId) {
+        setError("Invalid category name");
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        console.log(categoryId)
-        const response = await fetch(`http://localhost:1337/api/products/category/1`);
+        const response = await fetch(
+          `http://localhost:1337/api/products/category/${categoryId}` // Use categoryId in API call
+        );
         if (!response.ok) {
           throw new Error(`Error fetching products: ${response.statusText}`);
         }
         const data = await response.json();
         setProducts(data);
-        setTotalPages(Math.ceil(data.length / productsPerPage)); // Calculate total pages here
+        setTotalPages(Math.ceil(data.length / productsPerPage)); // Calculate total pages
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
         setError(error.message);
       } finally {
         setIsLoading(false);
@@ -35,7 +61,7 @@ const ProductList = ({ categoryId }) => {
     };
 
     fetchProducts();
-  }, [categoryId]); // Re-fetch products when categoryId changes
+  }, [categoryName]); // Re-fetch products when categoryName changes
 
   const startIndex = (currentPage - 1) * productsPerPage;
   const currentProducts = products.slice(startIndex, startIndex + productsPerPage);
@@ -55,7 +81,7 @@ const ProductList = ({ categoryId }) => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error: {error + " Name: " + categoryName}</div>;
   }
 
   if (products.length === 0) {
@@ -85,12 +111,26 @@ const ProductList = ({ categoryId }) => {
           </div>
           <div className="product-grid">
             {currentProducts.map((product) => (
-              <div key={product.id} className="product-card" onClick={() => handleProductClick(product.id)}>
-                <img src={'https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/200/200/productimage/125078807/125078807_0_MC/32b20c33.png'} alt={product.name} className="product-image" />
+              <div
+                key={product.product_id} // Corrected to product_id
+                className="product-card"
+                onClick={() => handleProductClick(product.product_id)} // Corrected to product_id
+              >
+                <img
+                  src={
+                    "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/200/200/productimage/125078807/125078807_0_MC/32b20c33.png"
+                  }
+                  alt={product.name}
+                  className="product-image"
+                />
                 <h3>{product.name}</h3>
                 <p className="product-price">{product.price}</p>
-                {product.discount && <span className="discount-tag">{product.discount}% OFF</span>}
-                <button onClick={() => handleProductClick(product.id)}>View Details</button>
+                {product.discount && (
+                  <span className="discount-tag">{product.discount}% OFF</span>
+                )}
+                <button onClick={() => handleProductClick(product.product_id)}>
+                  View Details
+                </button>
               </div>
             ))}
           </div>
@@ -106,7 +146,7 @@ const ProductList = ({ categoryId }) => {
               <button
                 key={index}
                 onClick={() => handlePageChange(index + 1)}
-                className={currentPage === index + 1 ? 'active' : ''}
+                className={currentPage === index + 1 ? "active" : ""}
               >
                 {index + 1}
               </button>
