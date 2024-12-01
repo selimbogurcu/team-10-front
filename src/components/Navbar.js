@@ -72,8 +72,20 @@ const Navbar = () => {
                                 <strong>Total:</strong> ₺{calculateTotalPrice()}
                             </div>
                             <div className="cart-actions">
-                                <button onClick={() => navigate('/cart')} className="view-cart-link">Go To Cart</button>
-                                <button onClick={() => navigate('/checkout')} className="checkout-button">Go Payment</button>
+                                <button onClick={() => navigate('/cart')} className="view-cart-link">
+                                    Go To Cart
+                                </button>
+                                <button 
+                                    onClick={() => {
+                                        if (token) {
+                                            navigate('/checkout'); // Valid token, navigate to payment
+                                        } else {
+                                            toggleUserModal(); // No valid token, open the login modal
+                                        }
+                                    }} 
+                                    className="checkout-button">
+                                    {token ? 'Go Payment' : 'Login to Pay'}
+                                </button>
                             </div>
                         </div>
                     ) : (

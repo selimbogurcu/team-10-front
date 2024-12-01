@@ -7,6 +7,8 @@ import UserProfile from './pages/UserProfile';
 import CartPage from './pages/CartPage'; // Sepet sayfası
 import AuthProvider from './contexts/AuthContexts';
 import CartProvider from './contexts/CartContexts';
+import PrivateRoutes from './routes/PrivateRoutes';
+import CheckoutPage from './pages/CheckoutPage';
 
 function App() {
     return (
@@ -18,7 +20,11 @@ function App() {
                         <Route path="/product/:productId" element={<ProductDetail />} />
                         <Route path="/category/:categoryName" element={<ProductList />} />
                         <Route path="/profile" element={<UserProfile />} />
-                        <Route path="/cart" element={<CartPage />} /> {/* Sepet sayfası */}
+                        <Route path="/cart" element={<CartPage />} />
+                        <Route
+                            path="/checkout"
+                            element={<PrivateRoutes element={<CheckoutPage />} />}
+                        />
                     </Routes>
                 </Router>
             </CartProvider>
