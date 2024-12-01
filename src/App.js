@@ -4,19 +4,30 @@ import Home from './pages/Home';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
 import UserProfile from './pages/UserProfile';
-import AuthProvider from './contexts/AuthContexts'; // AuthProvider'ı içe aktarın
+import CartPage from './pages/CartPage'; // Sepet sayfası
+import AuthProvider from './contexts/AuthContexts';
+import CartProvider from './contexts/CartContexts';
+import PrivateRoutes from './routes/PrivateRoutes';
+import CheckoutPage from './pages/CheckoutPage';
 
 function App() {
     return (
-        <AuthProvider> {/* Uygulamayı AuthProvider ile sarın */}
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/product/:id" element={<ProductDetail />} />
-                    <Route path="/category/:category" element={<ProductList />} />
-                    <Route path="/profile" element={<UserProfile />} />
-                </Routes>
-            </Router>
+        <AuthProvider> {/* Kullanıcı oturumu için AuthProvider */}
+            <CartProvider> {/* Alışveriş sepeti için CartProvider */}
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/product/:productId" element={<ProductDetail />} />
+                        <Route path="/category/:categoryName" element={<ProductList />} />
+                        <Route path="/profile" element={<UserProfile />} />
+                        <Route path="/cart" element={<CartPage />} />
+                        <Route
+                            path="/checkout"
+                            element={<PrivateRoutes element={<CheckoutPage />} />}
+                        />
+                    </Routes>
+                </Router>
+            </CartProvider>
         </AuthProvider>
     );
 }

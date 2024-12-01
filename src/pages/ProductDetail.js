@@ -1,74 +1,117 @@
-// ProductDetail.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import '../assets/styles/productDetail.css';
-import img1 from '../assets/images/exampleProduct1.jpeg';
-import img2 from '../assets/images/exampleProduct2.jpeg';
+import { useCart } from '../contexts/CartContexts'; // CartContext'ten hook
+import CartProductDm from '../domain/CartProductDm'; // Modeli içe aktar
 
 const ProductDetail = () => {
-    const { id } = useParams();
+    const { productId } = useParams();
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const { addToCart } = useCart(); // Sepete ekleme fonksiyonunu kullan
 
-    const sampleProduct = {
-        name: 'Uğur Haykır Taraftar Forması',
-        model: 'Model UH007',
-        serial_number: 'SN123456789',
-        description: 'This is a high-quality product suitable for various purposes. Built to last and highly reliable.',
-        quantity_in_stock: 25,
-        price: 200.00,
-        warranty_status: true,
-        distributor_info: 'Distributed by Global Distributors Ltd.',
-        category: 'Sportswear',
-        images: [img1, img2],
-        created_at: '2024-11-01'
-    };
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const response = await fetch(`http://localhost:1337/api/products/${productId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch product details');
+                }
+                const data = await response.json();
+                setProduct(data);
+                setLoading(false);
+            } catch (err) {
+                setError(err.message);
+                setLoading(false);
+            }
+        };
 
-    const [currentImage, setCurrentImage] = useState(sampleProduct.images[0]);
+        fetchProduct();
+    }, [productId]);
 
-    const handleMouseEnter = () => {
-        if (sampleProduct.images.length > 1) {
-            setCurrentImage(sampleProduct.images[1]);
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
+    if (!product) {
+        return <div>No product found</div>;
+    }
+
+    const handleAddToCart = () => {
+        if (product.quantity_in_stock <= 0) {
+            alert('This product is out of stock and cannot be added to the cart.');
+            return;
         }
+    
+        const productToAdd = new CartProductDm(
+            product.product_id,
+            product.name,
+            product.price,
+            1
+        );
+    
+        addToCart(productToAdd);
+        alert(`${product.name} added to cart`);
     };
-
-    const handleMouseLeave = () => {
-        setCurrentImage(sampleProduct.images[0]);
-    };
+    
 
     return (
         <div className="product-detail-page">
             <Navbar />
             <div className="product-detail">
-                <div className="product-image-section" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                    <img src={currentImage} alt={sampleProduct.name} className="product-image" />
+                <div className="product-image-section">
+                    {product.photo_url ? (
+                        <img
+                            src={product.photo_url}
+                            alt={product.name}
+                            className="product-image"
+                        />
+                    ) : (
+                        <p>No image available</p>
+                    )}
                     <div className="favorite-icon">❤</div>
                 </div>
                 <div className="product-info-section">
-                    <h1 className="product-name">{sampleProduct.name}</h1>
-                    <span className="product-tag">New Arrival</span>
-                    <p className="product-price">${sampleProduct.price.toFixed(2)}</p>
-                    <p className="product-description">{sampleProduct.description}</p>
-                    
+                    <h1 className="product-name">{product.name}</h1>
+                    <p className="product-model">Model: {product.model}</p>
+                    <p className="product-serial-number">Serial Number: {product.serial_number}</p>
+                    <p className="product-price">Price: ₺{parseFloat(product.price).toFixed(2)}</p>
+                    <p className="product-description">{product.description}</p>
+                    <p className="product-stock">
+                        Quantity in Stock: {product.quantity_in_stock}
+                    </p>
+                    <p className="product-warranty">
+                        Warranty Status: {product.warranty_status ? "Valid" : "Not Valid"}
+                    </p>
+                    <p className="product-distributor">
+                        Distributor: {product.distributor_info}
+                    </p>
+                    <p className="product-dimensions">
+                        Dimensions: {product.sizes?.dimensions || "N/A"}
+                    </p>
                     <div className="dropdowns">
                         <div className="dropdown">
-                            <label>Label</label>
+                            <label>Size</label>
                             <select>
-                                <option>Value 1</option>
-                                <option>Value 2</option>
-                                <option>Value 3</option>
-                            </select>
-                        </div>
-                        <div className="dropdown">
-                            <label>Label</label>
-                            <select>
-                                <option>Value 1</option>
-                                <option>Value 2</option>
-                                <option>Value 3</option>
+                                <option value={product.sizes?.dimensions}>
+                                    {product.sizes?.dimensions}
+                                </option>
                             </select>
                         </div>
                     </div>
-                    <button className="add-to-cart-button">Add to Cart</button>
+                    <button 
+                        className="add-to-cart-button" 
+                        onClick={handleAddToCart}
+                    >
+                        Add to Cart
+                    </button>
                 </div>
             </div>
             <Footer />
