@@ -54,7 +54,7 @@ const UserModal = ({ onClose }) => {
 
             if (response.ok) {
                 alert(isLogin ? 'Login successful!' : 'Registration successful!');
-                login(data.token); // AuthContext'e token gönder
+                login(data.token, { name: data.name });
                 handleClose();
             } else {
                 alert(data.error || 'An error occurred');

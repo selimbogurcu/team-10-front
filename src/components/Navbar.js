@@ -10,7 +10,7 @@ const Navbar = () => {
     const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
     const navigate = useNavigate();
     const cartDropdownRef = useRef(null);
-    const { token } = useAuth(); // AuthContext'ten token alın
+    const { token, user } = useAuth();
 
     const toggleUserModal = () => setIsUserModalOpen(!isUserModalOpen);
     const toggleCartDropdown = () => setIsCartDropdownOpen(!isCartDropdownOpen);
@@ -43,6 +43,7 @@ const Navbar = () => {
                 </div>
                 <div className="nav-icons">
                     <FaUser className="icon" onClick={handleUserIconClick} />
+                    {user && <span className="username">{user.name}</span>} {/* Kullanıcı adı */}
                     <FaHeart className="icon" />
                     <FaShoppingBag className="icon" onClick={toggleCartDropdown} />
                 </div>
