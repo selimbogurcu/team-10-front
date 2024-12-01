@@ -28,11 +28,10 @@ const Navbar = () => {
             <div className="navbar-content">
                 <div className="logo" onClick={() => navigate('/')}>TEAM10</div>
                 <ul className="nav-links">
-                    <li onClick={() => navigate('/category/Electronics')}>Electronics</li>
-                    <li onClick={() => navigate('/category/Home & Living')}>Home & Living</li>
-                    <li onClick={() => navigate('/category/Sports & Outdoors')}>Sports & Outdoors</li>
-                    <li onClick={() => navigate('/category/Books')}>Books</li>
-                    <li onClick={() => navigate('/category/Fashion')}>Fashion</li>
+                    <li onClick={() => navigate('/category/MobilePhone')}>Mobile Phone</li>
+                    <li onClick={() => navigate('/category/Television')}>Television</li>
+                    <li onClick={() => navigate('/category/Notebook')}>Notebook</li>
+                    <li onClick={() => navigate('/category/Tablets')}>Tablets</li>
                 </ul>
                 <div className="search-container">
                     <input
