@@ -13,6 +13,7 @@ const ProductList = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sortOption, setSortOption] = useState("new"); // Default sort option
 
   // Category mapper
   const categoryMapper = [
@@ -63,8 +64,23 @@ const ProductList = () => {
     fetchProducts();
   }, [categoryName]); // Re-fetch products when categoryName changes
 
+  // Sorting logic
+  const sortProducts = (products, option) => {
+    switch (option) {
+      case "price-asc":
+        return [...products].sort((a, b) => a.price - b.price);
+      case "price-desc":
+        return [...products].sort((a, b) => b.price - a.price);
+      case "rating":
+        return [...products].sort((a, b) => b.popularity - a.popularity); // Assuming popularity represents rating
+      default:
+        return products; // Default: no sorting
+    }
+  };
+
+  const sortedProducts = sortProducts(products, sortOption); // Sort products based on selected option
   const startIndex = (currentPage - 1) * productsPerPage;
-  const currentProducts = products.slice(startIndex, startIndex + productsPerPage);
+  const currentProducts = sortedProducts.slice(startIndex, startIndex + productsPerPage);
 
   const handleProductClick = (id) => {
     navigate(`/product/${id}`);
@@ -74,6 +90,11 @@ const ProductList = () => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  const handleSortChange = (option) => {
+    setSortOption(option);
+    setCurrentPage(1); // Reset to the first page when sorting changes
   };
 
   if (isLoading) {
@@ -103,28 +124,53 @@ const ProductList = () => {
         </aside>
         {/* Main Content - Product List */}
         <main className="product-list-container">
+          <div className="product-info">
+            <p>
+              Showing {startIndex + 1}-{Math.min(startIndex + productsPerPage, products.length)} of {products.length} products in {categoryName}'s
+            </p>
+          </div>
           <div className="sort-options">
-            <button className="active">New</button>
-            <button>Price ascending</button>
-            <button>Price descending</button>
-            <button>Rating</button>
+            <button
+              className={sortOption === "new" ? "active" : ""}
+              onClick={() => handleSortChange("new")}
+            >
+              New
+            </button>
+            <button
+              className={sortOption === "price-asc" ? "active" : ""}
+              onClick={() => handleSortChange("price-asc")}
+            >
+              Price ascending
+            </button>
+            <button
+              className={sortOption === "price-desc" ? "active" : ""}
+              onClick={() => handleSortChange("price-desc")}
+            >
+              Price descending
+            </button>
+            <button
+              className={sortOption === "rating" ? "active" : ""}
+              onClick={() => handleSortChange("rating")}
+            >
+              Popularity
+            </button>
           </div>
           <div className="product-grid">
             {currentProducts.map((product) => (
               <div
-                key={product.product_id} // Corrected to product_id
+                key={product.product_id}
                 className="product-card"
-                onClick={() => handleProductClick(product.product_id)} // Corrected to product_id
+                onClick={() => handleProductClick(product.product_id)}
               >
                 <img
                   src={
-                    "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/200/200/productimage/125078807/125078807_0_MC/32b20c33.png"
+                    product.photo_url || 'https://via.placeholder.com/150'
                   }
-                  alt={product.name}
+                  alt={product.name || 'Placeholder Image'}
                   className="product-image"
                 />
                 <h3>{product.name}</h3>
-                <p className="product-price">{product.price}</p>
+                <p className="product-price">{product.price + '₺'}</p>
                 {product.discount && (
                   <span className="discount-tag">{product.discount}% OFF</span>
                 )}

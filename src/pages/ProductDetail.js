@@ -3,12 +3,15 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import '../assets/styles/productDetail.css';
+import { useCart } from '../contexts/CartContexts'; // CartContext'ten hook
+import CartProductDm from '../domain/CartProductDm'; // Modeli içe aktar
 
 const ProductDetail = () => {
     const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { addToCart } = useCart(); // Sepete ekleme fonksiyonunu kullan
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -41,6 +44,19 @@ const ProductDetail = () => {
         return <div>No product found</div>;
     }
 
+    const handleAddToCart = () => {
+        // CartProductDm kullanarak ürün nesnesi oluştur
+        const productToAdd = new CartProductDm(
+            product.product_id,
+            product.name,
+            product.price,
+            1 // Varsayılan olarak 1 adet eklenir
+        );
+
+        addToCart(productToAdd); // Sepete ekle
+        alert(`${product.name} added to cart`);
+    };
+
     return (
         <div className="product-detail-page">
             <Navbar />
@@ -61,7 +77,7 @@ const ProductDetail = () => {
                     <h1 className="product-name">{product.name}</h1>
                     <p className="product-model">Model: {product.model}</p>
                     <p className="product-serial-number">Serial Number: {product.serial_number}</p>
-                    <p className="product-price">Price: ${parseFloat(product.price).toFixed(2)}</p>
+                    <p className="product-price">Price: ₺{parseFloat(product.price).toFixed(2)}</p>
                     <p className="product-description">{product.description}</p>
                     <p className="product-stock">
                         Quantity in Stock: {product.quantity_in_stock}
@@ -85,7 +101,12 @@ const ProductDetail = () => {
                             </select>
                         </div>
                     </div>
-                    <button className="add-to-cart-button">Add to Cart</button>
+                    <button 
+                        className="add-to-cart-button" 
+                        onClick={handleAddToCart}
+                    >
+                        Add to Cart
+                    </button>
                 </div>
             </div>
             <Footer />
