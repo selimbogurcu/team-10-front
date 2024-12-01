@@ -45,17 +45,22 @@ const ProductDetail = () => {
     }
 
     const handleAddToCart = () => {
-        // CartProductDm kullanarak ürün nesnesi oluştur
+        if (product.quantity_in_stock <= 0) {
+            alert('This product is out of stock and cannot be added to the cart.');
+            return;
+        }
+    
         const productToAdd = new CartProductDm(
             product.product_id,
             product.name,
             product.price,
-            1 // Varsayılan olarak 1 adet eklenir
+            1
         );
-
-        addToCart(productToAdd); // Sepete ekle
+    
+        addToCart(productToAdd);
         alert(`${product.name} added to cart`);
     };
+    
 
     return (
         <div className="product-detail-page">
