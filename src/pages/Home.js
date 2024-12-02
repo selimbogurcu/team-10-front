@@ -14,10 +14,10 @@ const Home = () => {
     const navigate = useNavigate();
 
     const categories = [
-        { id: 1, title: 'Electronics', description: 'Discover the latest in technology with exclusive offers!', image: electronicsImg },
-        { id: 2, title: 'Clothing', description: 'Fresh styles and top brands available now!', image: clothingImg },
-        { id: 3, title: 'Home & Living', description: 'Upgrade your home with beautiful decor and essentials.', image: homeLivingImg },
-        { id: 4, title: 'Fashion', description: 'Trendy outfits for every occasion. Shop now!', image: fashionImg },
+        { id: 1, title: 'Mobile Phone', description: 'Discover the latest in technology with exclusive offers!', image: electronicsImg },
+        { id: 2, title: 'Televison', description: 'Fresh styles and top brands available now!', image: clothingImg },
+        { id: 3, title: 'Notebook', description: 'Upgrade your home with beautiful decor and essentials.', image: homeLivingImg },
+        { id: 4, title: 'Tablet', description: 'Trendy outfits for every occasion. Shop now!', image: fashionImg },
     ];
 
     const featuredProducts = [

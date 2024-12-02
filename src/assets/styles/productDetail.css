@@ -224,3 +224,11 @@
         width: 100%; /* Single card per row on extra-small screens */
     }
 }
+
+.favorite-icon {
+    cursor: pointer;
+}
+.favorite-icon.favorited {
+    color: red;
+}
+

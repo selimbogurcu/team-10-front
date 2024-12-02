@@ -35,9 +35,9 @@ const Navbar = () => {
                 <div className="logo" onClick={() => navigate('/')}>TEAM10</div>
                 <ul className="nav-links">
                     <li onClick={() => navigate('/category/MobilePhone')}>Mobile Phone</li>
-                    <li onClick={() => navigate('/category/Television')}>Television</li>
                     <li onClick={() => navigate('/category/Notebook')}>Notebook</li>
-                    <li onClick={() => navigate('/category/Tablets')}>Tablets</li>
+                    <li onClick={() => navigate('/category/Television')}>Television</li>
+                    <li onClick={() => navigate('/category/Tablet')}>Tablet</li>
                 </ul>
                 <div className="search-container">
                     <input

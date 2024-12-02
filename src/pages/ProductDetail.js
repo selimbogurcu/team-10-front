@@ -3,15 +3,19 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import '../assets/styles/productDetail.css';
+import { useAuth } from '../contexts/AuthContexts'
 import { useCart } from '../contexts/CartContexts'; // CartContext'ten hook
 import CartProductDm from '../domain/CartProductDm'; // Modeli içe aktar
+import userEvent from '@testing-library/user-event';
 
 const ProductDetail = () => {
+    const { user } = useAuth();
     const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { addToCart } = useCart(); // Sepete ekleme fonksiyonunu kullan
+    const [isFavorited, setIsFavorited] = useState(false); // Favori durumu için state
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -31,6 +35,32 @@ const ProductDetail = () => {
 
         fetchProduct();
     }, [productId]);
+
+    const handleAddToFavorites = async () => {
+        if (!product) return;
+
+        try {
+            const response = await fetch('http://localhost:1337/api/wishlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: user.userIdNumber,
+                    product_id: productId,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add product to wishlist');
+            }
+
+            setIsFavorited(true);
+            alert(`${product.name} has been added to your wishlist!`);
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -76,7 +106,13 @@ const ProductDetail = () => {
                     ) : (
                         <p>No image available</p>
                     )}
-                    <div className="favorite-icon">❤</div>
+                    <div 
+                        className={`favorite-icon ${isFavorited ? 'favorited' : ''}`} 
+                        onClick={handleAddToFavorites}
+                        title="Add to Wishlist"
+                    >
+                        ❤
+                    </div>
                 </div>
                 <div className="product-info-section">
                     <h1 className="product-name">{product.name}</h1>

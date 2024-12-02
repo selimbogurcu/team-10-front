@@ -18,8 +18,8 @@ const ProductList = () => {
   // Category mapper
   const categoryMapper = [
     { category_id: 1, category_name: "MobilePhone" },
-    { category_id: 2, category_name: "Television" },
-    { category_id: 3, category_name: "Notebook" },
+    { category_id: 2, category_name: "Notebook" },
+    { category_id: 3, category_name: "Television" },
     { category_id: 4, category_name: "Tablet" },
   ];
 
