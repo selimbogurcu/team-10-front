@@ -128,79 +128,69 @@
     outline: none;
 }
 
-/* Latest Reviews Section */
-.latest-reviews {
+/* Comments Section */
+.comments-section {
     margin-top: 40px;
+    background-color: #f8f9fa;
     padding: 20px;
-    background-color: #f1f3f5; /* Slightly lighter for differentiation */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.latest-reviews h2 {
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-align: center;
-}
-
-.reviews-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center; /* Center align reviews */
-}
-
-.review-card {
-    background-color: #fff;
-    padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: calc(33.333% - 20px); /* Responsive width */
-    max-width: 300px; /* Limit card size */
+}
+
+.comments-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.comment {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+.comment p {
+    margin: 5px 0;
+}
+
+.stars {
+    color: #ffbf00; /* Yellow for stars */
+    font-size: 1.2rem;
+}
+
+/* Add Comment Section */
+.add-comment-section {
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    transition: transform 0.3s ease;
+    gap: 10px;
 }
 
-.review-card:hover {
-    transform: translateY(-5px);
+.add-comment-section textarea {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
 }
 
-.review-rating {
-    font-size: 1.2rem;
-    color: #ffbf00; /* Star color */
-    margin-bottom: 10px;
+.add-comment-section select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-.review-title {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #333;
-    margin: 10px 0;
+.add-comment-section button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-.review-body {
-    font-size: 0.9rem;
-    color: #555;
-    line-height: 1.4;
-    margin: 10px 0;
-}
-
-.reviewer-info {
-    font-size: 0.8rem;
-    color: #888;
-}
-
-.reviewer-name {
-    font-weight: bold;
-}
-
-.review-date {
-    font-style: italic;
+.add-comment-section button:hover {
+    background-color: #0056b3;
 }
 
 /* Responsive Design */
@@ -228,7 +218,7 @@
 .favorite-icon {
     cursor: pointer;
 }
+
 .favorite-icon.favorited {
     color: red;
 }
-
