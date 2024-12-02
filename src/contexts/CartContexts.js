@@ -20,7 +20,7 @@ const CartProvider = ({ children }) => {
         setCart((prevCart) => {
             // Ürün sepette zaten var mı kontrol et
             const existingProduct = prevCart.find((item) => item.id === product.id);
-    
+
             if (existingProduct) {
                 const updatedCart = prevCart.map((item) =>
                     item.id === product.id
@@ -32,29 +32,55 @@ const CartProvider = ({ children }) => {
                           )
                         : item
                 );
-    
+
                 console.log("Ürün eklendi (miktar güncellendi):", product);
                 console.log("Mevcut Sepet Durumu:", updatedCart);
-    
+
                 return updatedCart;
             }
-    
+
             const newProduct = new CartProductDm(
                 product.id,
                 product.name,
                 product.price,
                 product.count || 1 // Varsayılan olarak 1
             );
-    
+
             const updatedCart = [...prevCart, newProduct];
-    
+
             console.log("Yeni ürün eklendi:", newProduct);
             console.log("Mevcut Sepet Durumu:", updatedCart);
-    
+
             return updatedCart;
         });
     };
-    
+
+    // Sepetteki ürün miktarını azalt
+    const decreaseQuantity = (productId) => {
+        setCart((prevCart) => {
+            const updatedCart = prevCart
+                .map((item) => {
+                    if (item.id === productId) {
+                        // Miktar 1 ise ürünü tamamen kaldır
+                        if (item.count === 1) return null;
+                        // Miktarı azalt
+                        return new CartProductDm(
+                            item.id,
+                            item.name,
+                            item.price,
+                            item.count - 1
+                        );
+                    }
+                    return item;
+                })
+                .filter((item) => item !== null); // Sepetten null değerleri çıkar
+
+            console.log("Ürün azaltıldı:", productId);
+            console.log("Mevcut Sepet Durumu:", updatedCart);
+
+            return updatedCart;
+        });
+    };
 
     // Sepetten ürün çıkar
     const removeFromCart = (productId) => {
@@ -67,7 +93,7 @@ const CartProvider = ({ children }) => {
     };
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
+        <CartContext.Provider value={{ cart, addToCart, decreaseQuantity, removeFromCart, clearCart }}>
             {children}
         </CartContext.Provider>
     );

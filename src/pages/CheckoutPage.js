@@ -5,9 +5,9 @@ import { useCart } from '../contexts/CartContexts';
 import { useAuth } from '../contexts/AuthContexts';
 
 const CheckoutPage = () => {
-    const { cart } = useCart(); // Cart data
-    const { user } = useAuth(); // User data
-    const [products, setProducts] = useState([]); // Product details
+    const { cart, decreaseQuantity } = useCart(); // decreaseQuantity fonksiyonunu ekledim
+    const { user } = useAuth();
+    const [products, setProducts] = useState([]);
     const [userInfo, setUserInfo] = useState({
         name: user?.name || '',
         email: '',
@@ -54,10 +54,7 @@ const CheckoutPage = () => {
                     try {
                         const response = await fetch(`http://localhost:1337/api/products/${cartItem.id}`);
                         const data = await response.json();
-                        return {
-                            ...data,
-                            count: cartItem.count,
-                        };
+                        return { ...data, count: cartItem.count };
                     } catch (error) {
                         console.error(`Error fetching product (ID: ${cartItem.id}):`, error);
                         return null;
@@ -183,6 +180,19 @@ const CheckoutPage = () => {
                                     <strong>Quantity:</strong> {product.count}
                                 </p>
                             </div>
+                            <button
+                                onClick={() => decreaseQuantity(product.product_id)}
+                                style={{
+                                    padding: '8px 15px',
+                                    backgroundColor: 'red',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '5px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Remove
+                            </button>
                         </div>
                     ))
                 ) : (
