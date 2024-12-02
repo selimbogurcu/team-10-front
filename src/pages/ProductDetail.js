@@ -15,6 +15,7 @@ const ProductDetail = () => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [newRating, setNewRating] = useState(0);
+    const [averageRating, setAverageRating] = useState(0); // Ortalama rating
     const [canComment, setCanComment] = useState(false);
     const { addToCart } = useCart(); // Sepete ekleme fonksiyonu
 
@@ -27,20 +28,23 @@ const ProductDetail = () => {
                 const productData = await productResponse.json();
                 setProduct(productData);
 
-                // Yorumları getir
+                // Yorumları ve ratingleri getir
                 const commentsResponse = await fetch(`http://localhost:1337/api/comments/product/${productId}`);
                 if (!commentsResponse.ok) throw new Error('Failed to fetch product comments');
                 const commentsData = await commentsResponse.json();
-                setComments(commentsData);
+                setComments(commentsData.filter(comment => comment.approved)); // Onaylı yorumları göster
 
-                // Giriş yapılmışsa ve kullanıcının ürünü satın alıp almadığını kontrol etmek gerekiyorsa
+                // Ortalama rating hesapla
+                const ratings = commentsData.map(comment => comment.rating);
+                const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : 0;
+                setAverageRating(avgRating);
+
+                // Kullanıcının ürünü satın alıp almadığını kontrol et
                 if (user) {
-                    const purchaseResponse = await fetch(`http://localhost:1337/api/orders/user_id/${user.userIdNumber}`);
+                    const purchaseResponse = await fetch(`http://localhost:1337/api/orders/user-products/${user.userIdNumber}`);
                     if (purchaseResponse.ok) {
-                        const purchaseData = await purchaseResponse.json();
-                        const hasPurchased = purchaseData.some(order =>
-                            order.items?.some(item => item.product_id === parseInt(productId))
-                        );
+                        const purchasedProducts = await purchaseResponse.json();
+                        const hasPurchased = purchasedProducts.includes(parseInt(productId)); // ID eşleşmesi
                         setCanComment(hasPurchased);
                     }
                 }
@@ -76,6 +80,16 @@ const ProductDetail = () => {
             return;
         }
 
+        // Rating'i hemen güncelle
+        const updatedComments = [...comments];
+        updatedComments.push({
+            user: { name: user.name },
+            rating: newRating,
+            content: '', // Yorum henüz onaylanmadığı için boş bırakıyoruz
+            approved: false, // Backend'den gelen onay durumu
+        });
+        setComments(updatedComments);
+
         try {
             const response = await fetch('http://localhost:1337/api/comments/create', {
                 method: 'POST',
@@ -91,9 +105,6 @@ const ProductDetail = () => {
             });
 
             if (!response.ok) throw new Error('Failed to add comment');
-            const newCommentData = await response.json();
-
-            setComments(prev => [...prev, newCommentData]);
             setNewComment('');
             setNewRating(0);
         } catch (err) {
@@ -158,12 +169,12 @@ const ProductDetail = () => {
             </div>
             <div className="comments-section">
                 <h2>Comments & Ratings</h2>
+                <p className="average-rating">Average Rating: {averageRating} ★</p>
                 {comments.map(comment => (
                     <div key={comment.comment_id} className="comment">
-                        <p><strong>{comment.username}:</strong> {comment.content}</p>
+                        <p><strong>{comment.user?.name || "Anonymous"}:</strong> {comment.content}</p>
                         <p className="stars">
                             {'★'.repeat(Math.floor(comment.rating)) + 
-                            (comment.rating % 1 ? '½' : '') +
                             '☆'.repeat(5 - Math.ceil(comment.rating))}
                         </p>
                     </div>
@@ -184,7 +195,7 @@ const ProductDetail = () => {
                                 <option value={4}>4 Stars</option>
                                 <option value={5}>5 Stars</option>
                             </select>
-                            <button onClick={handleAddComment}>Add Comment</button>
+                            <button onClick={handleAddComment}>Submit</button>
                         </div>
                     ) : (
                         <p>You need to purchase the product before leaving a comment.</p>
