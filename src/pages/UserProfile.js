@@ -3,22 +3,30 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import '../assets/styles/userProfile.css';
 import { useAuth } from '../contexts/AuthContexts';
+import { useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
     const { token, user, logout } = useAuth();
+    const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const [userOrders, setUserOrders] = useState([]);
     const [loadingUser, setLoadingUser] = useState(true);
     const [loadingOrders, setLoadingOrders] = useState(true);
     const [error, setError] = useState(null);
 
-    // Fetch user data
     useEffect(() => {
+        if (!user || !user.userIdNumber) {
+            setError("User is not authenticated");
+            setLoadingUser(false);
+            navigate('/');
+            return;
+        }
+
         const fetchUserData = async () => {
             try {
                 const response = await fetch(`http://localhost:1337/api/users/${user.userIdNumber}`, {
                     headers: {
-                        Authorization: `Bearer ${token}`, // Assuming you're using a Bearer token for authentication
+                        Authorization: `Bearer ${token}`,
                     },
                 });
 
@@ -36,15 +44,20 @@ const UserProfile = () => {
         };
 
         fetchUserData();
-    }, [token, user.userIdNumber]);
+    }, [token, user, navigate]);
 
-    // Fetch user orders
     useEffect(() => {
+        if (!user || !user.userIdNumber) {
+            setError("User is not authenticated");
+            setLoadingOrders(false);
+            return;
+        }
+
         const fetchUserOrders = async () => {
             try {
                 const response = await fetch(`http://localhost:1337/api/orders/user_id/${user.userIdNumber}`, {
                     headers: {
-                        Authorization: `Bearer ${token}`, // Assuming you're using a Bearer token for authentication
+                        Authorization: `Bearer ${token}`,
                     },
                 });
 
@@ -62,11 +75,12 @@ const UserProfile = () => {
         };
 
         fetchUserOrders();
-    }, [token, user.userIdNumber]);
+    }, [token, user]);
 
     const handleLogout = () => {
         logout();
         console.log("User logged out");
+        navigate('/'); // Ana sayfaya yönlendir
     };
 
     if (loadingUser || loadingOrders) {
@@ -84,10 +98,10 @@ const UserProfile = () => {
                 <h1 className="profile-title">My Profile</h1>
                 <div className="profile-details">
                     <h2>Personal Information</h2>
-                    <p><strong>Name:</strong> {userData.name}</p>
-                    <p><strong>Email:</strong> {userData.email}</p>
-                    <p><strong>Phone:</strong> {userData.phone || "Not provided"}</p>
-                    <p><strong>Address:</strong> {userData.address}</p>
+                    <p><strong>Name:</strong> {userData?.name || "Not available"}</p>
+                    <p><strong>Email:</strong> {userData?.email || "Not available"}</p>
+                    <p><strong>Phone:</strong> {userData?.phone || "Not provided"}</p>
+                    <p><strong>Address:</strong> {userData?.address || "Not provided"}</p>
                 </div>
                 <div className="order-history">
                     <h2>Order History</h2>
