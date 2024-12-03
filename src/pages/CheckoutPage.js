@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import PaymentModal from '../components/PaymentModal'; // PaymentModal bileşenini ekledik
 import { useCart } from '../contexts/CartContexts';
 import { useAuth } from '../contexts/AuthContexts';
 
 const CheckoutPage = () => {
-    const { cart, decreaseQuantity } = useCart(); // decreaseQuantity fonksiyonunu ekledim
+    const { cart, decreaseQuantity } = useCart(); // decreaseQuantity fonksiyonunu ekledik
     const { user } = useAuth();
     const [products, setProducts] = useState([]);
     const [userInfo, setUserInfo] = useState({
@@ -17,6 +18,13 @@ const CheckoutPage = () => {
 
     const [isOrderEnabled, setIsOrderEnabled] = useState(false);
     const [isSaveEnabled, setIsSaveEnabled] = useState(false);
+
+    // Modal state
+    const [isPaymentModalOpen, setPaymentModalOpen] = useState(false); // Modal açık/kapalı kontrolü
+
+    // Modal kontrolü
+    const openPaymentModal = () => setPaymentModalOpen(true);
+    const closePaymentModal = () => setPaymentModalOpen(false);
 
     // Fetch user information from the API
     useEffect(() => {
@@ -81,67 +89,14 @@ const CheckoutPage = () => {
         setUserInfo((prevInfo) => ({ ...prevInfo, [name]: value }));
     };
 
-    // Save user information
-    const handleSave = async () => {
-        try {
-            const response = await fetch(`http://localhost:1337/api/users/${user.userIdNumber}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    tax_id: userInfo.tax_id,
-                    address: userInfo.address,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update user information.');
-            }
-
-            const data = await response.json();
-            alert('Your information has been updated successfully!');
-            console.log('User information updated:', data);
-        } catch (error) {
-            console.error('Error updating user information:', error);
-            alert('An error occurred while updating your information.');
+    // Place order button now opens the Payment Modal
+    const handleOrder = () => {
+        if (!isOrderEnabled) {
+            alert("Please fill all required information.");
+            return;
         }
-    };
 
-    // Place order when the "Place Order" button is clicked
-    const handleOrder = async () => {
-        const orderPayload = {
-            user_id: user.userIdNumber,
-            total_price: products.reduce((total, product) => total + product.price * product.count, 0),
-            status: 'Pending',
-            delivery_address: userInfo.address,
-            items: products.map((product) => ({
-                product_id: product.product_id,
-                quantity: product.count,
-                price: product.price,
-            })),
-        };
-
-        try {
-            const response = await fetch('http://localhost:1337/api/orders', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(orderPayload),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to create order.');
-            }
-
-            const data = await response.json();
-            alert(`Order placed successfully! Order ID: ${data.orderId}`);
-            console.log('Order created:', data);
-        } catch (error) {
-            console.error('Error placing order:', error);
-            alert('An error occurred while placing your order.');
-        }
+        openPaymentModal(); // Modalı aç
     };
 
     return (
@@ -248,25 +203,7 @@ const CheckoutPage = () => {
 
             {/* Save Button */}
             <button
-                onClick={handleSave}
-                disabled={!isSaveEnabled}
-                style={{
-                    padding: '10px 20px',
-                    backgroundColor: isSaveEnabled ? 'green' : 'gray',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: isSaveEnabled ? 'pointer' : 'not-allowed',
-                    marginRight: '10px',
-                }}
-            >
-                Save
-            </button>
-
-            {/* Place Order Button */}
-            <button
                 onClick={handleOrder}
-                disabled={!isOrderEnabled}
                 style={{
                     padding: '10px 20px',
                     backgroundColor: isOrderEnabled ? 'blue' : 'gray',
@@ -278,6 +215,16 @@ const CheckoutPage = () => {
             >
                 Place Order
             </button>
+
+            {/* Payment Modal */}
+            <PaymentModal
+                isOpen={isPaymentModalOpen}
+                onClose={closePaymentModal}
+                onPaymentSuccess={() => {
+                    alert("Payment successful! Order placed.");
+                    closePaymentModal();
+                }}
+            />
 
             <Footer />
         </div>

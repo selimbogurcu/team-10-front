@@ -19,8 +19,8 @@
     background-color: #fff;
     padding: 25px;
     border-radius: 16px; /* Daha yuvarlak köşeler */
-    width: 350px;
-    max-width: 90%;
+    width: 900px; /* Genişlik artırıldı */
+    max-width: 95%; /* Mobil uyumluluk */
     box-sizing: border-box;
     text-align: center;
     position: relative;
@@ -51,29 +51,21 @@
     color: #007bff; /* Hover rengi eklendi */
 }
 
-/* Sekme Tasarımı */
-.tabs {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-    border-bottom: 1px solid #ddd;
+.credit-card-image {
+    background-image: url('/src/assets/images/creditcard.png'); /* Kredi kartı görsel yolu */
+    background-size: cover; /* Görsel çerçeveyi tamamen doldurur */
+    background-position: center; /* Görseli çerçevenin ortasına hizalar */
+    background-repeat: no-repeat; /* Görselin tekrarlamasını önler */
+    width: 100%; /* Çerçevenin genişliğini tamamen doldur */
+    height: 100%; /* Çerçevenin yüksekliğini tamamen doldur */
+    border-radius: 8px; /* Köşeleri yuvarlat */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Gölge efekti */
 }
 
-.tab {
-    font-weight: bold;
-    padding: 10px 20px;
-    cursor: pointer;
-    color: #777;
-    transition: color 0.3s ease, border-bottom 0.3s ease;
-}
 
-.tab.active {
-    color: #000;
-    border-bottom: 3px solid #007bff; /* Aktif sekme vurgusu */
-}
-
-/* Form Elemanları */
-input[type="email"], input[type="password"], input[type="text"] {
+input[type="email"],
+input[type="password"],
+input[type="text"] {
     width: calc(100% - 20px);
     padding: 12px;
     margin: 10px 0;
@@ -84,21 +76,15 @@ input[type="email"], input[type="password"], input[type="text"] {
     transition: border-color 0.3s ease;
 }
 
-input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus {
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus {
     border-color: #007bff; /* Focus rengi */
     box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2); /* Focus gölgesi */
 }
 
-.forgot-password {
-    font-size: 0.6rem;
-    color: #007bff;
-    cursor: pointer;
-    margin-bottom: 10px;
-    display: block;
-}
-
-
-.sign-in-button, .register-button {
+.sign-in-button,
+.register-button {
     padding: 12px;
     background-color: #007bff;
     color: #fff;
@@ -111,11 +97,11 @@ input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focu
     transition: background-color 0.3s ease;
 }
 
-.sign-in-button:hover, .register-button:hover {
+.sign-in-button:hover,
+.register-button:hover {
     background-color: #0056b3; /* Hover efekti */
 }
 
-/* Sosyal Medya Butonları */
 .social-buttons {
     display: flex;
     flex-direction: column;
@@ -143,21 +129,37 @@ input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focu
 
 /* Animasyonlar */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
 
 @keyframes slideIn {
-    from { transform: scale(0.9) translateY(-20px); }
-    to { transform: scale(1) translateY(0); }
+    from {
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        transform: scale(1) translateY(0);
+    }
 }
 
 @keyframes slideOut {
-    from { transform: scale(1) translateY(0); }
-    to { transform: scale(0.9) translateY(-20px); }
+    from {
+        transform: scale(1) translateY(0);
+    }
+    to {
+        transform: scale(0.9) translateY(-20px);
+    }
 }
