@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useCart } from '../contexts/CartContexts';
 import { useAuth } from '../contexts/AuthContexts';
+import PaymentModal from '../components/PaymentModal'; // PaymentModal bileşeni import edildi
 
 const CheckoutPage = () => {
     const { cart, decreaseQuantity } = useCart(); // decreaseQuantity fonksiyonunu ekledim
@@ -17,6 +18,7 @@ const CheckoutPage = () => {
 
     const [isOrderEnabled, setIsOrderEnabled] = useState(false);
     const [isSaveEnabled, setIsSaveEnabled] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false); // Payment modal kontrolü
 
     // Fetch user information from the API
     useEffect(() => {
@@ -81,6 +83,59 @@ const CheckoutPage = () => {
         setUserInfo((prevInfo) => ({ ...prevInfo, [name]: value }));
     };
 
+    const handleOrder = async () => {
+        const orderPayload = {
+            user_id: user.userIdNumber,
+            total_price: products.reduce((total, product) => total + product.price * product.count, 0),
+            status: 'processing',
+            delivery_address: userInfo.address,
+            items: products.map((product) => ({
+                product_id: product.product_id,
+                quantity: product.count,
+                price: product.price,
+            })),
+        };
+    
+        try {
+            // Siparişi oluştur
+            const response = await fetch('http://localhost:1337/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderPayload),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to create order.');
+            }
+    
+            const data = await response.json();
+            alert(`Order placed successfully! Order ID: ${data.orderId}`);
+    
+            // PDF gönder
+            const pdfResponse = await fetch(`http://localhost:1337/api/orders/${data.orderId}/sendPDF`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (!pdfResponse.ok) {
+                throw new Error('Failed to send order PDF.');
+            }
+    
+            const pdfData = await pdfResponse.json();
+            alert('Order PDF sent successfully!');
+            console.log('PDF sent:', pdfData);
+    
+        } catch (error) {
+            console.error('Error placing order or sending PDF:', error);
+            alert('An error occurred while processing your order.');
+        }
+    };
+    
+
     // Save user information
     const handleSave = async () => {
         try {
@@ -105,42 +160,6 @@ const CheckoutPage = () => {
         } catch (error) {
             console.error('Error updating user information:', error);
             alert('An error occurred while updating your information.');
-        }
-    };
-
-    // Place order when the "Place Order" button is clicked
-    const handleOrder = async () => {
-        const orderPayload = {
-            user_id: user.userIdNumber,
-            total_price: products.reduce((total, product) => total + product.price * product.count, 0),
-            status: 'Pending',
-            delivery_address: userInfo.address,
-            items: products.map((product) => ({
-                product_id: product.product_id,
-                quantity: product.count,
-                price: product.price,
-            })),
-        };
-
-        try {
-            const response = await fetch('http://localhost:1337/api/orders', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(orderPayload),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to create order.');
-            }
-
-            const data = await response.json();
-            alert(`Order placed successfully! Order ID: ${data.orderId}`);
-            console.log('Order created:', data);
-        } catch (error) {
-            console.error('Error placing order:', error);
-            alert('An error occurred while placing your order.');
         }
     };
 
@@ -265,7 +284,7 @@ const CheckoutPage = () => {
 
             {/* Place Order Button */}
             <button
-                onClick={handleOrder}
+                onClick={() => setIsPaymentModalOpen(true)} // Modal açılır
                 disabled={!isOrderEnabled}
                 style={{
                     padding: '10px 20px',
@@ -278,6 +297,13 @@ const CheckoutPage = () => {
             >
                 Place Order
             </button>
+
+            {/* Payment Modal */}
+            <PaymentModal
+                isOpen={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                handleOrder={handleOrder} // handleOrder fonksiyonunu buradan geçiriyoruz
+            />
 
             <Footer />
         </div>
