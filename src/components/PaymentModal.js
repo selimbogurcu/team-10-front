@@ -107,22 +107,23 @@ const PaymentModal = ({ isOpen, onClose, handleOrder }) => {
         </div>
       </div>
 
-      {/* Make Payment Button */}
-      <button
-        style={{
-          marginTop: '20px',
-          padding: '10px 20px',
-          backgroundColor: 'green',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          fontWeight: 'bold',
-        }}
-        onClick={handleOrder} // handleOrder fonksiyonu çağrılır
-      >
-        Make Payment
-      </button>
+      {/* Make Payment Button - En alta taşındı */}
+      <div style={{ marginTop: 'auto', padding: '20px 0', textAlign: 'center' }}>
+        <button
+          style={{
+            padding: '10px 20px',
+            backgroundColor: 'green',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          }}
+          onClick={handleOrder} // handleOrder fonksiyonu çağrılır
+        >
+          Make Payment
+        </button>
+      </div>
     </Modal>
   );
 };
