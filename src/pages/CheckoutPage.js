@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContexts';
 import PaymentModal from '../components/PaymentModal'; // PaymentModal bileşeni import edildi
 
 const CheckoutPage = () => {
-    const { cart, decreaseQuantity } = useCart(); // decreaseQuantity fonksiyonunu ekledim
+    const { cart, decreaseQuantity, clearCart } = useCart();
     const { user } = useAuth();
     const [products, setProducts] = useState([]);
     const [userInfo, setUserInfo] = useState({
@@ -129,12 +129,15 @@ const CheckoutPage = () => {
             alert('Order PDF sent successfully!');
             console.log('PDF sent:', pdfData);
     
+            // Sepeti temizle
+            clearCart();
+    
         } catch (error) {
             console.error('Error placing order or sending PDF:', error);
             alert('An error occurred while processing your order.');
         }
     };
-    
+        
 
     // Save user information
     const handleSave = async () => {
