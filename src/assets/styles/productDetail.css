@@ -94,10 +94,18 @@
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.add-to-cart-button:hover {
+.add-to-cart-button.disabled {
+    background-color: #ccc;
+    color: #777;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.add-to-cart-button:hover:not(.disabled) {
     background-color: #0056b3;
     box-shadow: 0 4px 10px rgba(0, 91, 187, 0.3);
 }
+
 
 /* Dropdown Styles */
 .dropdowns {

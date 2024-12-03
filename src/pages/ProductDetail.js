@@ -63,14 +63,14 @@ const ProductDetail = () => {
             alert('This product is out of stock and cannot be added to the cart.');
             return;
         }
-
+    
         addToCart({
             id: product.product_id,
             name: product.name,
             price: product.price,
             count: 1,
         });
-
+    
         alert(`${product.name} added to the cart!`);
     };
 
@@ -160,8 +160,9 @@ const ProductDetail = () => {
                         </select>
                     </div>
                     <button 
-                        className="add-to-cart-button" 
+                        className={`add-to-cart-button ${product.quantity_in_stock <= 0 ? 'disabled' : ''}`} 
                         onClick={handleAddToCart}
+                        disabled={product.quantity_in_stock <= 0}  // Disable the button if out of stock
                     >
                         Add to Cart
                     </button>
