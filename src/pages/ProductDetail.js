@@ -32,19 +32,19 @@ const ProductDetail = () => {
                 const commentsResponse = await fetch(`http://localhost:1337/api/comments/product/${productId}`);
                 if (!commentsResponse.ok) throw new Error('Failed to fetch product comments');
                 const commentsData = await commentsResponse.json();
-                setComments(commentsData.filter(comment => comment.approved)); // Onaylı yorumları göster
+                setComments(commentsData.filter(comment => comment.approved)); 
 
-                // Ortalama rating hesapla
+                
                 const ratings = commentsData.map(comment => comment.rating);
                 const avgRating = ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : 0;
                 setAverageRating(avgRating);
 
-                // Kullanıcının ürünü satın alıp almadığını kontrol et
+                
                 if (user) {
                     const purchaseResponse = await fetch(`http://localhost:1337/api/orders/user-products/${user.userIdNumber}`);
                     if (purchaseResponse.ok) {
                         const purchasedProducts = await purchaseResponse.json();
-                        const hasPurchased = purchasedProducts.includes(parseInt(productId)); // ID eşleşmesi
+                        const hasPurchased = purchasedProducts.includes(parseInt(productId)); 
                         setCanComment(hasPurchased);
                     }
                 }
@@ -80,13 +80,13 @@ const ProductDetail = () => {
             return;
         }
 
-        // Rating'i hemen güncelle
+        
         const updatedComments = [...comments];
         updatedComments.push({
             user: { name: user.name },
             rating: newRating,
-            content: '', // Yorum henüz onaylanmadığı için boş bırakıyoruz
-            approved: false, // Backend'den gelen onay durumu
+            content: '', 
+            approved: false, 
         });
         setComments(updatedComments);
 
@@ -162,7 +162,7 @@ const ProductDetail = () => {
                     <button 
                         className={`add-to-cart-button ${product.quantity_in_stock <= 0 ? 'disabled' : ''}`} 
                         onClick={handleAddToCart}
-                        disabled={product.quantity_in_stock <= 0}  // Disable the button if out of stock
+                        disabled={product.quantity_in_stock <= 0}  
                     >
                         Add to Cart
                     </button>

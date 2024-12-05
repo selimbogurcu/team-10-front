@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useCart } from '../contexts/CartContexts';
 import { useAuth } from '../contexts/AuthContexts';
-import PaymentModal from '../components/PaymentModal'; // PaymentModal bileşeni import edildi
+import PaymentModal from '../components/PaymentModal'; 
 
 const CheckoutPage = () => {
     const { cart, decreaseQuantity, clearCart } = useCart();
@@ -18,9 +18,9 @@ const CheckoutPage = () => {
 
     const [isOrderEnabled, setIsOrderEnabled] = useState(false);
     const [isSaveEnabled, setIsSaveEnabled] = useState(false);
-    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false); // Payment modal kontrolü
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false); 
 
-    // Fetch user information from the API
+    
     useEffect(() => {
         const fetchUserInfo = async () => {
             if (!user?.userIdNumber) return;
@@ -48,7 +48,7 @@ const CheckoutPage = () => {
         fetchUserInfo();
     }, [user?.userIdNumber]);
 
-    // Fetch product details from the API
+    
     useEffect(() => {
         const fetchProducts = async () => {
             const productDetails = await Promise.all(
@@ -70,7 +70,7 @@ const CheckoutPage = () => {
         fetchProducts();
     }, [cart]);
 
-    // Check if user information is complete
+    
     useEffect(() => {
         const isFormFilled = userInfo.tax_id.trim() !== '' && userInfo.address.trim() !== '';
         setIsOrderEnabled(isFormFilled);
@@ -97,7 +97,7 @@ const CheckoutPage = () => {
         };
     
         try {
-            // Siparişi oluştur
+            
             const response = await fetch('http://localhost:1337/api/orders', {
                 method: 'POST',
                 headers: {
@@ -113,7 +113,7 @@ const CheckoutPage = () => {
             const data = await response.json();
             alert(`Order placed successfully! Order ID: ${data.orderId}`);
     
-            // PDF gönder
+            
             const pdfResponse = await fetch(`http://localhost:1337/api/orders/${data.orderId}/sendPDF`, {
                 method: 'POST',
                 headers: {
@@ -129,7 +129,7 @@ const CheckoutPage = () => {
             alert('Order PDF sent successfully!');
             console.log('PDF sent:', pdfData);
     
-            // Sepeti temizle
+            
             clearCart();
     
         } catch (error) {
@@ -139,7 +139,7 @@ const CheckoutPage = () => {
     };
         
 
-    // Save user information
+    
     const handleSave = async () => {
         try {
             const response = await fetch(`http://localhost:1337/api/users/${user.userIdNumber}`, {
