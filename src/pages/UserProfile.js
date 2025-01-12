@@ -5,7 +5,7 @@ import '../assets/styles/userProfile.css';
 import { useAuth } from '../contexts/AuthContexts';
 import { useNavigate } from 'react-router-dom';
 
-const UserProfile = () => {
+const UserProfile = () => {    //tokenlerin ayarlanması
     const { token, user, logout } = useAuth();
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
@@ -44,7 +44,7 @@ const UserProfile = () => {
         };
 
         fetchUserData();
-    }, [token, user, navigate]);
+    }, [token, user, navigate]); //tokeni çağırdığın nokta
 
     useEffect(() => {
         if (!user || !user.userIdNumber) {
@@ -79,8 +79,8 @@ const UserProfile = () => {
 
     const handleLogout = () => {
         logout();
-        console.log("User logged out");
-        navigate('/'); // Ana sayfaya yönlendir
+        console.log("User logged out");  //çıkış pop up ı
+        navigate('/'); 
     };
 
     if (loadingUser || loadingOrders) {
@@ -128,5 +128,8 @@ const UserProfile = () => {
         </div>
     );
 };
+
+
+
 
 export default UserProfile;
