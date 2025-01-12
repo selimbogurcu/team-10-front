@@ -26,8 +26,9 @@ const AuthProvider = ({ children }) => {
         setUser(null);
 
         // Session Storage'dan temizle
-        sessionStorage.removeItem("token");
+        // Userdan role kontrolü
         sessionStorage.removeItem("user");
+        sessionStorage.removeItem("token");
     };
 
     return (
