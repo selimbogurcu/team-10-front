@@ -5,7 +5,7 @@ import { useCart } from '../contexts/CartContexts';
 import { useAuth } from '../contexts/AuthContexts';
 import PaymentModal from '../components/PaymentModal'; 
 
-const CheckoutPage = () => {
+const CheckoutPage = () => {   //giriş bilgileri
     const { cart, decreaseQuantity, clearCart } = useCart();
     const { user } = useAuth();
     const [products, setProducts] = useState([]);
@@ -77,7 +77,7 @@ const CheckoutPage = () => {
         setIsSaveEnabled(isFormFilled);
     }, [userInfo]);
 
-    // Update user information
+    // kullanıcı bilgilerinin updatelenmesi
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUserInfo((prevInfo) => ({ ...prevInfo, [name]: value }));
