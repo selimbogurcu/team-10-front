@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import '../assets/styles/productDetail.css';
 import { useAuth } from '../contexts/AuthContexts';
-import { useCart } from '../contexts/CartContexts'; // Sepet için context
+import { useCart } from '../contexts/CartContexts'; // sepetin içeriğini aldığımız nokta
 
 const ProductDetail = () => {
     const { user } = useAuth();
@@ -15,20 +15,20 @@ const ProductDetail = () => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [newRating, setNewRating] = useState(0);
-    const [averageRating, setAverageRating] = useState(0); // Ortalama rating
+    const [averageRating, setAverageRating] = useState(0); // ortalama rating alan kısım
     const [canComment, setCanComment] = useState(false);
-    const { addToCart } = useCart(); // Sepete ekleme fonksiyonu
+    const { addToCart } = useCart(); 
 
     useEffect(() => {
         const fetchProductAndComments = async () => {
             try {
-                // Ürün detaylarını getir
+                // ürünün detaylarını girdiğni kısım
                 const productResponse = await fetch(`http://localhost:1337/api/products/${productId}`);
                 if (!productResponse.ok) throw new Error('Failed to fetch product details');
                 const productData = await productResponse.json();
                 setProduct(productData);
 
-                // Yorumları ve ratingleri getir
+                // yazdığın yorumlar ve seçtiğin ratingleri getirme kısmı
                 const commentsResponse = await fetch(`http://localhost:1337/api/comments/product/${productId}`);
                 if (!commentsResponse.ok) throw new Error('Failed to fetch product comments');
                 const commentsData = await commentsResponse.json();
@@ -88,7 +88,7 @@ const ProductDetail = () => {
             content: '', 
             approved: false, 
         });
-        setComments(updatedComments);
+        setComments(updatedComments); //yorum kısımları düzenlenmleme
 
         try {
             const response = await fetch('http://localhost:1337/api/comments/create', {
