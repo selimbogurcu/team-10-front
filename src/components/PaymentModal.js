@@ -13,13 +13,13 @@ const PaymentModal = ({ isOpen, onClose, handleOrder }) => {
   const formatCardNumber = (value) =>
     value.replace(/\D/g, '').replace(/(\d{4})/g, '$1 ').trim();
 
-  // Expiration Date formatlama
+  // expiration date ayarlanması
   const formatExpiryDate = (value) => {
-    const cleanValue = value.replace(/\D/g, ''); // Sadece sayılar
+    const cleanValue = value.replace(/\D/g, ''); // sadece sayılar olan kısım
     if (cleanValue.length <= 2) {
       return cleanValue; // İlk iki hane (Ay)
     }
-    return `${cleanValue.slice(0, 2)}/${cleanValue.slice(2, 4)}`; // MM/YY formatı
+    return `${cleanValue.slice(0, 2)}/${cleanValue.slice(2, 4)}`; // ay yıl formatının oluşturulması
   };
 
   return (
@@ -119,7 +119,7 @@ const PaymentModal = ({ isOpen, onClose, handleOrder }) => {
             cursor: 'pointer',
             fontWeight: 'bold',
           }}
-          onClick={handleOrder} // handleOrder fonksiyonu çağrılır
+          onClick={handleOrder} // handleorder fonkisyonunu çağır
         >
           Make Payment
         </button>
