@@ -114,7 +114,26 @@ const Navbar = () => {
                 </div>
                 <div className="nav-icons">
                     <FaUser className="icon" onClick={handleUserIconClick} />
-                    {user && <span className="username">{user.name}</span>}
+                    {user && (
+                                <>
+                                    <span
+                                        className="username"
+                                        onClick={() => {
+                                            if (user.role === 'Product Manager') {
+                                                navigate('/product-manager');
+                                            } else if (user.role === 'Sales Manager') {
+                                                navigate('/sales-manager');
+                                            } else {
+                                                navigate('/profile');
+                                            }
+                                        }}
+                                    >
+                                        {user.role === 'Product Manager' && 'Product Manager'}
+                                        {user.role === 'Sales Manager' && 'Sales Manager'}
+                                        {!['Product Manager', 'Sales Manager'].includes(user.role) && user.name}
+                                    </span>
+                                </>
+                            )}
                     <FaHeart className="icon" />
                     <FaShoppingBag className="icon" onClick={toggleCartDropdown} />
                 </div>
