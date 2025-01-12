@@ -4,7 +4,7 @@ import { FaGoogle, FaApple, FaFacebook } from 'react-icons/fa';
 import '../assets/styles/modal.css'; 
 
 const UserModal = ({ onClose }) => {
-    const { login } = useAuth(); // AuthContext'ten login fonksiyonunu alın
+    const { login } = useAuth(); // authcontext
     const [isLogin, setIsLogin] = useState(true);
     const [isClosing, setIsClosing] = useState(false);
     const [formData, setFormData] = useState({
@@ -39,7 +39,7 @@ const UserModal = ({ onClose }) => {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
-                role: 'User',         // Default role
+                role: 'User',         // default role
                 tax_id: '-',          // Default tax ID
                 address: '-'          // Default address
             };
@@ -64,7 +64,7 @@ const UserModal = ({ onClose }) => {
                 alert(data.error || 'An error occurred');
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error:', error); // giriş uyarısını alan kısım
             alert('An error occurred.');
         }
     };
