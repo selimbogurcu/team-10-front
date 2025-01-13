@@ -117,7 +117,7 @@ const ProductManager = () => {
   const updateDeliveryStatus = async (orderId, status) => {
     try {
         // Call the new endpoint
-        await axios.put(`http://localhost:1337/api/order/${orderId}/status`, {
+        await axios.put(`http://localhost:1337/api/orders/${orderId}`, {
             status,
         });
 
@@ -144,8 +144,8 @@ const ProductManager = () => {
 
   const handleApproveComment = async (id) => {
     try {
-      await axios.post('http://localhost:1337/api/comments/approve', {
-        comment_id: id,
+      await axios.post('http://localhost:1337/api/product-manager/comment/approve', {
+        commentId: id,
       });
       fetchUnapprovedComments();
     } catch (error) {
@@ -188,7 +188,7 @@ const ProductManager = () => {
   // ================== PRODUCTS (YENİ) ======================
   const fetchAllProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:1337/api/product-manager/products');
+      const response = await axios.get('http://localhost:1337/api/products');
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -226,7 +226,7 @@ const ProductManager = () => {
 
   const handleUpdateProduct = async () => {
     try {
-      await axios.put(`http://localhost:1337/api/product-manager/product/${editingProduct}`, newProduct);
+      await axios.put(`http://localhost:1337/api/product/${editingProduct}`, newProduct);
       setEditingProduct(null);
       // Formu sıfırla
       setNewProduct({
@@ -241,7 +241,8 @@ const ProductManager = () => {
         category_id: '',
         sizes: '',
         photo_url: '',
-        popularity: 0
+        popularity: 0,
+        product_id: '',
       });
       fetchAllProducts();
     } catch (error) {
