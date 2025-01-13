@@ -4,8 +4,11 @@ import Footer from '../components/Footer';
 import { useCart } from '../contexts/CartContexts';
 import { useAuth } from '../contexts/AuthContexts';
 import PaymentModal from '../components/PaymentModal'; 
+import Modal from 'react-modal'; // react-modal veya herhangi bir modal kütüphanesi kullanılabilir
 
-const CheckoutPage = () => {   //giriş bilgileri
+Modal.setAppElement('#root'); // Accessibility için zorunlu (React Modal)
+
+const CheckoutPage = () => {
     const { cart, decreaseQuantity, clearCart } = useCart();
     const { user } = useAuth();
     const [products, setProducts] = useState([]);
@@ -19,8 +22,9 @@ const CheckoutPage = () => {   //giriş bilgileri
     const [isOrderEnabled, setIsOrderEnabled] = useState(false);
     const [isSaveEnabled, setIsSaveEnabled] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false); 
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); // Başarılı ödeme pop-up'ı
+    const [orderDetails, setOrderDetails] = useState(null); // Sipariş bilgileri
 
-    
     useEffect(() => {
         const fetchUserInfo = async () => {
             if (!user?.userIdNumber) return;
@@ -48,7 +52,6 @@ const CheckoutPage = () => {   //giriş bilgileri
         fetchUserInfo();
     }, [user?.userIdNumber]);
 
-    
     useEffect(() => {
         const fetchProducts = async () => {
             const productDetails = await Promise.all(
@@ -70,14 +73,12 @@ const CheckoutPage = () => {   //giriş bilgileri
         fetchProducts();
     }, [cart]);
 
-    
     useEffect(() => {
         const isFormFilled = userInfo.tax_id.trim() !== '' && userInfo.address.trim() !== '';
         setIsOrderEnabled(isFormFilled);
         setIsSaveEnabled(isFormFilled);
     }, [userInfo]);
 
-    // kullanıcı bilgilerinin updatelenmesi
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUserInfo((prevInfo) => ({ ...prevInfo, [name]: value }));
@@ -95,9 +96,8 @@ const CheckoutPage = () => {   //giriş bilgileri
                 price: product.price,
             })),
         };
-    
+
         try {
-            
             const response = await fetch('http://localhost:1337/api/orders', {
                 method: 'POST',
                 headers: {
@@ -105,65 +105,28 @@ const CheckoutPage = () => {   //giriş bilgileri
                 },
                 body: JSON.stringify(orderPayload),
             });
-    
+
             if (!response.ok) {
                 throw new Error('Failed to create order.');
             }
-    
+
             const data = await response.json();
-            alert(`Order placed successfully! Order ID: ${data.orderId}`);
-    
-            
-            const pdfResponse = await fetch(`http://localhost:1337/api/orders/${data.orderId}/sendPDF`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-    
-            if (!pdfResponse.ok) {
-                throw new Error('Failed to send order PDF.');
-            }
-    
-            const pdfData = await pdfResponse.json();
-            alert('Order PDF sent successfully!');
-            console.log('PDF sent:', pdfData);
-    
-            
-            clearCart();
-    
+            setOrderDetails({
+                orderId: data.orderId,
+                totalPrice: orderPayload.total_price,
+                items: products,
+            }); // Sipariş detaylarını kaydet
+            setIsSuccessModalOpen(true); // Başarı pop-up'ını aç
+            clearCart(); // Sepeti temizle
         } catch (error) {
-            console.error('Error placing order or sending PDF:', error);
+            console.error('Error placing order:', error);
             alert('An error occurred while processing your order.');
         }
     };
-        
 
-    
-    const handleSave = async () => {
-        try {
-            const response = await fetch(`http://localhost:1337/api/users/${user.userIdNumber}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    tax_id: userInfo.tax_id,
-                    address: userInfo.address,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update user information.');
-            }
-
-            const data = await response.json();
-            alert('Your information has been updated successfully!');
-            console.log('User information updated:', data);
-        } catch (error) {
-            console.error('Error updating user information:', error);
-            alert('An error occurred while updating your information.');
-        }
+    const closeModal = () => {
+        setIsSuccessModalOpen(false); // Modal'ı kapat
+        setOrderDetails(null); // Sipariş bilgilerini sıfırla
     };
 
     return (
@@ -222,69 +185,6 @@ const CheckoutPage = () => {   //giriş bilgileri
                 )}
             </div>
 
-            {/* User Information Form */}
-            <div style={{ marginBottom: '20px' }}>
-                <h2>User Information</h2>
-                <form style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <label>
-                        Name:
-                        <input
-                            type="text"
-                            value={userInfo.name}
-                            disabled
-                            style={{ padding: '5px', width: '100%', backgroundColor: '#f0f0f0' }}
-                        />
-                    </label>
-                    <label>
-                        Email:
-                        <input
-                            type="email"
-                            value={userInfo.email}
-                            disabled
-                            style={{ padding: '5px', width: '100%', backgroundColor: '#f0f0f0' }}
-                        />
-                    </label>
-                    <label>
-                        Tax ID:
-                        <input
-                            type="text"
-                            name="tax_id"
-                            value={userInfo.tax_id}
-                            onChange={handleInputChange}
-                            required
-                            style={{ padding: '5px', width: '100%' }}
-                        />
-                    </label>
-                    <label>
-                        Address:
-                        <textarea
-                            name="address"
-                            value={userInfo.address}
-                            onChange={handleInputChange}
-                            required
-                            style={{ padding: '5px', width: '100%', height: '60px' }}
-                        />
-                    </label>
-                </form>
-            </div>
-
-            {/* Save Button */}
-            <button
-                onClick={handleSave}
-                disabled={!isSaveEnabled}
-                style={{
-                    padding: '10px 20px',
-                    backgroundColor: isSaveEnabled ? 'green' : 'gray',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: isSaveEnabled ? 'pointer' : 'not-allowed',
-                    marginRight: '10px',
-                }}
-            >
-                Save
-            </button>
-
             {/* Place Order Button */}
             <button
                 onClick={() => setIsPaymentModalOpen(true)} // Modal açılır
@@ -305,8 +205,58 @@ const CheckoutPage = () => {   //giriş bilgileri
             <PaymentModal
                 isOpen={isPaymentModalOpen}
                 onClose={() => setIsPaymentModalOpen(false)}
-                handleOrder={handleOrder} // handleOrder fonksiyonunu buradan geçiriyoruz
+                handleOrder={handleOrder} 
             />
+
+            {/* Success Modal */}
+            <Modal
+                isOpen={isSuccessModalOpen}
+                onRequestClose={closeModal}
+                contentLabel="Order Success"
+                style={{
+                    content: {
+                        top: '50%',
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '-50%',
+                        transform: 'translate(-50%, -50%)',
+                        borderRadius: '10px',
+                        padding: '20px',
+                        maxWidth: '400px',
+                    },
+                }}
+            >
+                <h2>Order Successful!</h2>
+                {orderDetails && (
+                    <div>
+                        <p><strong>Order ID:</strong> {orderDetails.orderId}</p>
+                        <p><strong>Total Price:</strong> {orderDetails.totalPrice} ₺</p>
+                        <p><strong>Products:</strong></p>
+                        <ul>
+                            {orderDetails.items.map((item, index) => (
+                                <li key={index}>
+                                    {item.name} - {item.price} ₺ x {item.count}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+                <button
+                    onClick={closeModal}
+                    style={{
+                        marginTop: '20px',
+                        padding: '10px 20px',
+                        backgroundColor: 'green',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Close
+                </button>
+            </Modal>
 
             <Footer />
         </div>
