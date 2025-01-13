@@ -58,6 +58,32 @@ const ProductDetail = () => {
         fetchProductAndComments();
     }, [productId, user]);
 
+    const handleAddRating = async () => {
+        if (newRating === 0) {
+            alert('Please provide a rating.');
+            return;
+        }
+    
+        try {
+            const response = await fetch('http://localhost:1337/api/comments/add-rating', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: user.userIdNumber,
+                    product_id: productId,
+                    rating: newRating,
+                }),
+            });
+    
+            if (!response.ok) throw new Error('Failed to add rating');
+            setNewRating(0);
+            alert('Rating added successfully!');
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    };
+    
+
     const handleAddToCart = () => {
         if (!product || product.quantity_in_stock <= 0) {
             alert('This product is out of stock and cannot be added to the cart.');
@@ -182,21 +208,16 @@ const ProductDetail = () => {
                 ))}
                 {user ? (
                     canComment ? (
-                        <div className="add-comment-section">
-                            <textarea
-                                placeholder="Write your comment..."
-                                value={newComment}
-                                onChange={e => setNewComment(e.target.value)}
-                            />
-                            <select value={newRating} onChange={e => setNewRating(Number(e.target.value))}>
+                        <div className="add-rating-section">
+                            <select value={newRating} onChange={(e) => setNewRating(Number(e.target.value))}>
                                 <option value={0}>Select Rating</option>
-                                <option value={1}>1 Star</option>
-                                <option value={2}>2 Stars</option>
-                                <option value={3}>3 Stars</option>
-                                <option value={4}>4 Stars</option>
-                                <option value={5}>5 Stars</option>
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <option key={star} value={star}>
+                                        {star} Star{star > 1 ? 's' : ''}
+                                    </option>
+                                ))}
                             </select>
-                            <button onClick={handleAddComment}>Submit</button>
+                            <button onClick={handleAddRating}>Submit Rating</button>
                         </div>
                     ) : (
                         <p>You need to purchase the product before leaving a comment.</p>
