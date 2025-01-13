@@ -23,16 +23,13 @@ const Navbar = () => {
     const toggleCartDropdown = () => setIsCartDropdownOpen(!isCartDropdownOpen);
 
     const handleUserIconClick = () => {
-        // Örnek: user.name === "Login Deneme" veya user.role === "Product Manager"
-        // gibi farklı kontrol senaryoları.
         if (token && user) {
             console.log(user.role)
             if (user.role === "product_manager") {
                 navigate('/product-manager');
-            } else if (user.role === "Sales Manager") {
+            } else if (user.role === "sales_manager") {
                 navigate('/sales-manager');
             } else {
-                // Diğer tüm roller ya da roller tanımlanmamışsa
                 navigate('/profile');
             }
         } else {
