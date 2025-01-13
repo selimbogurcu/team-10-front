@@ -9,6 +9,9 @@ import AuthProvider from './contexts/AuthContexts';
 import CartProvider from './contexts/CartContexts';
 import PrivateRoutes from './routes/PrivateRoutes';
 import CheckoutPage from './pages/CheckoutPage';
+import SalesManager from './pages/SalesManager';
+//<Route path="/salesmanager" component={SalesManager} />
+
 
 function App() {
     return (

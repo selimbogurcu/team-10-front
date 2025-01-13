@@ -1,105 +1,91 @@
-  import React, { useEffect, useState } from 'react';
-  import axios from 'axios';
-  import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-  const SalesManagerDashboard = () => { 
-    const [salesData, setSalesData] = useState([]);
+const SalesManagerDashboard = () => {
+    const [discountData, setDiscountData] = useState({ productIds: [], discountRate: 0 });
+    const [salesReport, setSalesReport] = useState(null);
     const [orders, setOrders] = useState([]);
-    const [topProducts, setTopProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-      fetchDashboardData();
-    }, []);
-
-    const fetchDashboardData = async () => {
-      try {
-        // Fetch sales stats
-        const salesResponse = await axios.get('/api/salesmanager/sales');
-        setSalesData(salesResponse.data);
-
-        // Fetch all orders
-        const ordersResponse = await axios.get('/api/orders');
-        setOrders(ordersResponse.data);
-
-        // Fetch top-performing products
-        const productsResponse = await axios.get('/api/salesmanager/top-products');
-        setTopProducts(productsResponse.data);
-
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      }
+    const fetchOrders = async () => {
+        try {
+            const response = await axios.get('/api/orders');
+            setOrders(response.data);
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        }
     };
 
-    if (loading) {
-      return <div>Loading...</div>;
-    }
+    const applyDiscount = async () => {
+        try {
+            await axios.put('/api/salesmanager/applyDiscount', discountData);
+            alert('Discount applied successfully!');
+        } catch (error) {
+            console.error('Error applying discount:', error);
+        }
+    };
+
+    const generateSalesReport = async (startDate, endDate) => {
+        try {
+            const response = await axios.post('/api/salesmanager/salesreport', { startDate, endDate });
+            setSalesReport(response.data);
+        } catch (error) {
+            console.error('Error generating sales report:', error);
+        }
+    };
+
+    const processRefund = async (orderId, productId) => {
+        try {
+            await axios.put(`/api/salesmanager/refund/${orderId}`, { productId });
+            alert('Refund processed successfully!');
+        } catch (error) {
+            console.error('Error processing refund:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchOrders();
+    }, []);
 
     return (
-      <div style={{ padding: '20px' }}>
-        <h1>Sales Manager Dashboard</h1>
+        <div>
+            <h1>Sales Manager Dashboard</h1>
 
-        <section style={{ marginBottom: '30px' }}>
-          <h2>Sales Overview</h2>
-          <LineChart width={600} height={300} data={salesData}>
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <CartesianGrid stroke="#ccc" />
-            <Line type="monotone" dataKey="revenue" stroke="#8884d8" />
-          </LineChart>
-        </section>
+            <div>
+                <h2>Apply Discount</h2>
+                <input
+                    type="text"
+                    placeholder="Product IDs (comma-separated)"
+                    onChange={(e) => setDiscountData({ ...discountData, productIds: e.target.value.split(',') })}
+                />
+                <input
+                    type="number"
+                    placeholder="Discount Rate (%)"
+                    onChange={(e) => setDiscountData({ ...discountData, discountRate: Number(e.target.value) })}
+                />
+                <button onClick={applyDiscount}>Apply Discount</button>
+            </div>
 
-        <section style={{ marginBottom: '30px' }}>
-          <h2>Top Products</h2>
-          <BarChart width={600} height={300} data={topProducts}>
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <CartesianGrid stroke="#ccc" />
-            <Bar dataKey="sales" fill="#82ca9d" />
-          </BarChart>
-        </section>
+            <div>
+                <h2>Generate Sales Report</h2>
+                <button onClick={() => generateSalesReport('2023-01-01', '2023-12-31')}>Download Report</button>
+            </div>
 
-        <section>
-          <h2>Orders</h2>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th style={{ border: '1px solid #ddd', padding: '8px' }}>Order ID</th>
-                <th style={{ border: '1px solid #ddd', padding: '8px' }}>Customer</th>
-                <th style={{ border: '1px solid #ddd', padding: '8px' }}>Status</th>
-                <th style={{ border: '1px solid #ddd', padding: '8px' }}>Total</th>
-                <th style={{ border: '1px solid #ddd', padding: '8px' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order.id}>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.id}</td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.customer_name}</td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.status}</td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>{order.total_price}</td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                    <button onClick={() => updateOrderStatus(order.id, 'Completed')}>Complete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      </div>
+            <div>
+                <h2>Refund Requests</h2>
+                {orders.map((order) => (
+                    <div key={order.id}>
+                        <h3>Order #{order.id}</h3>
+                        {order.products.map((product) => (
+                            <div key={product.id}>
+                                {product.name}
+                                <button onClick={() => processRefund(order.id, product.id)}>Refund</button>
+                            </div>
+                        ))}
+                    </div>
+                ))}
+            </div>
+        </div>
     );
-  };
+};
 
-  const updateOrderStatus = async (orderId, status) => {
-    try {
-      await axios.put(`/api/orders/${orderId}`, { status });
-      alert('Order status updated successfully!');
-    } catch (error) {
-      console.error('Error updating order status:', error);
-    }
-  };
-
-  export default SalesManagerDashboard;
+export default SalesManagerDashboard;
