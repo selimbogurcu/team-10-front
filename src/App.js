@@ -10,7 +10,7 @@ import CartProvider from './contexts/CartContexts';
 import PrivateRoutes from './routes/PrivateRoutes';
 import CheckoutPage from './pages/CheckoutPage';
 import SalesManager from './pages/SalesManager';
-//<Route path="/salesmanager" component={SalesManager} />
+
 
 
 function App() {
@@ -24,6 +24,7 @@ function App() {
                         <Route path="/category/:categoryName" element={<ProductList />} />
                         <Route path="/profile" element={<UserProfile />} />
                         <Route path="/cart" element={<CartPage />} />
+                        <Route path="/salesmanager" component={SalesManager} />
                         <Route
                             path="/checkout"
                             element={<PrivateRoutes element={<CheckoutPage />} />}
