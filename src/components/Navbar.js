@@ -25,10 +25,9 @@ const Navbar = () => {
     const handleUserIconClick = () => {
         console.log(user)
         if (token && user) {
-            // Kullanıcının rolüne göre yönlendir
             if (user.name === "Login Deneme") {
                 navigate('/product-manager');
-            } else if (user.role === 'Sales Manager') {
+            } else if (user.name === "Sales Manager") {
                 navigate('/sales-manager');
             } else {
                 navigate('/profile');

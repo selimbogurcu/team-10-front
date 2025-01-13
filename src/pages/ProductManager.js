@@ -2,10 +2,19 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../assets/styles/productManager.css';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { useAuth } from '../contexts/AuthContexts';
+import { useNavigate } from 'react-router-dom';
 
 const ProductManager = () => {
   const [activeTab, setActiveTab] = useState('categories');
+  const { token, user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    console.log("User logged out");  //çıkış pop up ı
+    navigate('/'); 
+};
 
   // --- Categories ---
   const [categories, setCategories] = useState([]);
@@ -61,27 +70,44 @@ const ProductManager = () => {
 
   const handleAddCategory = async () => {
     try {
-      await axios.post('http://localhost:1337/api/product-manager/category', {
-        category_name: newCategory,
+      const response = await axios.post('http://localhost:1337/api/categories/', {
+        category_name: newCategory, // newCategory state'inden aldığımız değer
       });
+      
+      console.log(response.data.message);
+      console.log(response.data.categoryId);
+  
       setNewCategory('');
+      
       fetchCategories();
     } catch (error) {
       console.error('Error adding category:', error);
     }
   };
+  
 
   const handleUpdateCategory = async () => {
     try {
-      await axios.put(`http://localhost:1337/api/product-manager/category/${editingCategory.id}`, {
-        category_name: editingCategory.name,
-      });
+      // editingCategory.id güncellenmek istenen kategorinin ID'si
+      const response = await axios.put(
+        `http://localhost:1337/api/product-manager/category/${editingCategory.id}`,
+        {
+          category_name: editingCategory.name,
+        }
+      );
+  
+      console.log(response.data.message); // "Category updated successfully"
+  
+      // Güncelleme tamamlandıktan sonra edit modunu kapatıyoruz.
       setEditingCategory({ id: null, name: '' });
+      
+      // Kategorileri yeniden çekerek güncellenmiş listeyi ekranda gösteriyoruz.
       fetchCategories();
     } catch (error) {
       console.error('Error updating category:', error);
     }
   };
+  
 
   const handleDeleteCategory = async (id) => {
     try {
@@ -242,7 +268,7 @@ const ProductManager = () => {
         sizes: '',
         photo_url: '',
         popularity: 0,
-        product_id: '',
+        product_id: ''
       });
       fetchAllProducts();
     } catch (error) {
@@ -566,6 +592,7 @@ const ProductManager = () => {
 
       {/* ----- İçerik (Main) ----- */}
       <div className="content">{renderContent()}</div>
+      <button className="logout-button" onClick={handleLogout}>Logout</button>
     </div>
   );
 };
