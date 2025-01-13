@@ -1,0 +1,88 @@
+.sales-manager {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+.sales-manager h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #444;
+}
+
+.sales-manager section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sales-manager section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.sales-manager ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sales-manager ul li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.sales-manager ul li:last-child {
+    border-bottom: none;
+}
+
+.sales-manager table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.sales-manager table th,
+.sales-manager table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.sales-manager table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.sales-manager input[type="number"] {
+    padding: 5px;
+    width: 60px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.sales-manager button {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.sales-manager button:hover {
+    background-color: #0056b3;
+}
+
+.sales-manager .chart {
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

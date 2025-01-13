@@ -10,6 +10,7 @@ import CartProvider from './contexts/CartContexts';
 import PrivateRoutes from './routes/PrivateRoutes';
 import CheckoutPage from './pages/CheckoutPage';
 import ProductManager from './pages/ProductManager';
+import SalesManager from './pages/SalesManager';
 
 function App() {
     return (
@@ -30,6 +31,10 @@ function App() {
                         <Route
                             path="/product-manager"
                             element={<PrivateRoutes element={<ProductManager />} />}
+                        />
+                        <Route
+                            path="/sales-manager"
+                            element={<PrivateRoutes element={<SalesManager />} />}
                         />
                     </Routes>
                 </Router>
