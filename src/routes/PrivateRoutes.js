@@ -1,16 +1,22 @@
+// routes/PrivateRoutes.js
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContexts';
 
-const PrivateRoutes = ({ element }) => {
-    const { token } = useAuth();
+const PrivateRoutes = ({ element, allowedRoles = [] }) => {
+    const { token, user } = useAuth();
 
+    // Kullanıcı login değilse anasayfaya gönder
     if (!token) {
-        // Redirect unauthenticated users to the homepage or open login modal
         return <Navigate to="/" replace />;
     }
 
-    // Render the passed component if the user is authenticated
+    // allowedRoles doluysa ve kullanıcı rolü bu listede değilse yine anasayfaya gönder
+    if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
+        return <Navigate to="/" replace />;
+    }
+
+    // Hem token hem de role uygunsa route içeriğini döndür
     return element;
 };
 

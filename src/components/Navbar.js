@@ -23,19 +23,23 @@ const Navbar = () => {
     const toggleCartDropdown = () => setIsCartDropdownOpen(!isCartDropdownOpen);
 
     const handleUserIconClick = () => {
-        console.log(user)
+        // Örnek: user.name === "Login Deneme" veya user.role === "Product Manager"
+        // gibi farklı kontrol senaryoları.
         if (token && user) {
-            if (user.name === "Login Deneme") {
+            console.log(user.role)
+            if (user.role === "product_manager") {
                 navigate('/product-manager');
-            } else if (user.name === "Sales Manager") {
+            } else if (user.role === "Sales Manager") {
                 navigate('/sales-manager');
             } else {
+                // Diğer tüm roller ya da roller tanımlanmamışsa
                 navigate('/profile');
             }
         } else {
             toggleUserModal();
         }
     };
+    
 
     const calculateTotalPrice = () => {
         return cart.reduce((total, item) => total + item.price * item.count, 0).toFixed(2);

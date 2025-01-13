@@ -1,3 +1,4 @@
+// App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
@@ -23,18 +24,33 @@ function App() {
                         <Route path="/category/:categoryName" element={<ProductList />} />
                         <Route path="/profile" element={<UserProfile />} />
                         <Route path="/cart" element={<CartPage />} />
+                        
+                        {/* Sadece giriş yapmış herkes için (rol farketmez) */}
                         <Route
                             path="/checkout"
                             element={<PrivateRoutes element={<CheckoutPage />} />}
                         />
-                        {/* Product Manager Paneli */}
+
+                        {/* Sadece "Product Manager" rolüne sahip kullanıcılar */}
                         <Route
                             path="/product-manager"
-                            element={<PrivateRoutes element={<ProductManager />} />}
+                            element={
+                                <PrivateRoutes
+                                    element={<ProductManager />}
+                                    allowedRoles={['product_manager']}
+                                />
+                            }
                         />
+
+                        {/* Sadece "Sales Manager" rolüne sahip kullanıcılar */}
                         <Route
                             path="/sales-manager"
-                            element={<PrivateRoutes element={<SalesManager />} />}
+                            element={
+                                <PrivateRoutes
+                                    element={<SalesManager />}
+                                    allowedRoles={['sales_manager']}
+                                />
+                            }
                         />
                     </Routes>
                 </Router>

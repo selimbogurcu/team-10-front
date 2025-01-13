@@ -55,8 +55,10 @@ const UserModal = ({ onClose }) => {
             if (response.ok) {
                 alert(isLogin ? 'Login successful!' : 'Registration successful!');
                 // `login` fonksiyonuna `userIdNumber` da ekleniyor
+                console.log(data)
                 login(data.token, { 
-                    name: data.name, 
+                    name: data.name,
+                    role: data.role, 
                     userIdNumber: data.userIdNumber 
                 });
                 handleClose();

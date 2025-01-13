@@ -18,6 +18,7 @@ const AuthProvider = ({ children }) => {
         // Session Storage'a kaydet
         sessionStorage.setItem("token", newToken);
         sessionStorage.setItem("user", JSON.stringify(userData));
+        console.log(user)
     };
 
     // Logout fonksiyonu
