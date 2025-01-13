@@ -4,11 +4,12 @@ import Home from './pages/Home';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
 import UserProfile from './pages/UserProfile';
-import CartPage from './pages/CartPage'; // Sepet sayfası
+import CartPage from './pages/CartPage';
 import AuthProvider from './contexts/AuthContexts';
 import CartProvider from './contexts/CartContexts';
 import PrivateRoutes from './routes/PrivateRoutes';
 import CheckoutPage from './pages/CheckoutPage';
+import ProductManager from './pages/ProductManager';
 
 function App() {
     return (
@@ -24,6 +25,11 @@ function App() {
                         <Route
                             path="/checkout"
                             element={<PrivateRoutes element={<CheckoutPage />} />}
+                        />
+                        {/* Product Manager Paneli */}
+                        <Route
+                            path="/product-manager"
+                            element={<PrivateRoutes element={<ProductManager />} />}
                         />
                     </Routes>
                 </Router>
