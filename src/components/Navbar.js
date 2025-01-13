@@ -23,8 +23,16 @@ const Navbar = () => {
     const toggleCartDropdown = () => setIsCartDropdownOpen(!isCartDropdownOpen);
 
     const handleUserIconClick = () => {
-        if (token) {
-            navigate('/profile');
+        console.log(user)
+        if (token && user) {
+            // Kullanıcının rolüne göre yönlendir
+            if (user.name === "Login Deneme") {
+                navigate('/product-manager');
+            } else if (user.role === 'Sales Manager') {
+                navigate('/sales-manager');
+            } else {
+                navigate('/profile');
+            }
         } else {
             toggleUserModal();
         }
@@ -34,7 +42,6 @@ const Navbar = () => {
         return cart.reduce((total, item) => total + item.price * item.count, 0).toFixed(2);
     };
 
-    // API'den arama sonuçlarını al
     const fetchSearchResults = async (query) => {
         if (!query) {
             setSearchResults([]);
@@ -46,7 +53,7 @@ const Navbar = () => {
             const response = await fetch(`http://localhost:1337/api/products/search/${query}`);
             if (response.ok) {
                 const data = await response.json();
-                console.log(data)
+                console.log(data);
                 setSearchResults(data);
             } else {
                 setSearchResults([]);
@@ -55,17 +62,16 @@ const Navbar = () => {
             console.error('Error fetching search results:', error);
             setSearchResults([]);
         } finally {
-            setIsSearching(false); // Arama tamamlandı
+            setIsSearching(false);
         }
     };
 
-    // Debouncing ile arama sorgularını optimize et
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             fetchSearchResults(searchTerm);
-        }, 500); // Kullanıcı girişinden 500ms sonra API'yi çağır
+        }, 500);
 
-        return () => clearTimeout(timeoutId); // Önceki timeout'u temizle
+        return () => clearTimeout(timeoutId);
     }, [searchTerm]);
 
     return (
@@ -84,7 +90,7 @@ const Navbar = () => {
                         className="search-input"
                         placeholder="Search products..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)} // Kullanıcı girişi
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     {searchResults.length > 0 && (
                         <div className="search-dropdown" ref={searchDropdownRef}>
@@ -99,7 +105,7 @@ const Navbar = () => {
                                         <span
                                             className="result-action"
                                             onClick={(e) => {
-                                                e.stopPropagation(); // Ana tıklama olayını engelle
+                                                e.stopPropagation();
                                                 navigate(`/product/${result.product_id}`);
                                             }}
                                         >
@@ -110,11 +116,19 @@ const Navbar = () => {
                             </ul>
                         </div>
                     )}
-
                 </div>
                 <div className="nav-icons">
                     <FaUser className="icon" onClick={handleUserIconClick} />
-                    {user && <span className="username">{user.name}</span>} {/* Kullanıcı adı */}
+                    {user && (
+                        <span
+                            className="username"
+                            onClick={handleUserIconClick}
+                        >
+                            {user.role === 'productproduct_manager'}
+                            {user.role === 'Sales Manager' && 'Sales Manager'}
+                            {!['Product Manager', 'Sales Manager'].includes(user.role) && user.name}
+                        </span>
+                    )}
                     <FaHeart className="icon" />
                     <FaShoppingBag className="icon" onClick={toggleCartDropdown} />
                 </div>
@@ -141,15 +155,16 @@ const Navbar = () => {
                                 <button onClick={() => navigate('/cart')} className="view-cart-link">
                                     Go To Cart
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => {
                                         if (token) {
-                                            navigate('/checkout'); // Valid token, navigate to payment
+                                            navigate('/checkout');
                                         } else {
-                                            toggleUserModal(); // No valid token, open the login modal
+                                            toggleUserModal();
                                         }
-                                    }} 
-                                    className="checkout-button">
+                                    }}
+                                    className="checkout-button"
+                                >
                                     {token ? 'Go Payment' : 'Login to Pay'}
                                 </button>
                             </div>
