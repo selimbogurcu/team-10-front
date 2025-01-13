@@ -14,7 +14,7 @@ const ProductManager = () => {
     logout();
     console.log("User logged out");  //çıkış pop up ı
     navigate('/'); 
-};
+    };
 
   // --- Categories ---
   const [categories, setCategories] = useState([]);
