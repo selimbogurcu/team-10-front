@@ -384,6 +384,8 @@ const ProductManager = () => {
                         onChange={(e) => handleStatusChange(delivery.order_id, e.target.value)}
                       >
                         <option value="processing">Processing</option>
+                        <option value="refund-accepted">Refund Accepted</option>
+                        <option value="cancelled">Cancelled</option>
                         <option value="in-transit">In Transit</option>
                         <option value="delivered">Delivered</option>
                       </select>
