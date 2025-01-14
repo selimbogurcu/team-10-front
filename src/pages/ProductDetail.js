@@ -17,6 +17,7 @@ const ProductDetail = () => {
     const [newRating, setNewRating] = useState(0);
     const [averageRating, setAverageRating] = useState(0); // ortalama rating alan kısım
     const [canComment, setCanComment] = useState(false);
+    const [wishlistAdded, setWishlistAdded] = useState(false); // Yeni wishlist state'i
     const { addToCart } = useCart(); 
 
     useEffect(() => {
@@ -73,6 +74,34 @@ const ProductDetail = () => {
     
         alert(`${product.name} added to the cart!`);
     };
+
+
+    const handleAddToWishlist = async () => {
+        try {
+            if (!user) {
+                alert('You need to log in to add items to your wishlist.');
+                return;
+            }
+            
+            const response = await fetch('http://localhost:1337/api/wishlists/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: user.userIdNumber,
+                    product_id: productId,
+                }),
+            });
+
+            if (!response.ok) throw new Error('Failed to add item to wishlist');
+            setWishlistAdded(true);
+            alert(`${product.name} added to your wishlist!`);
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    };
+
 
     const handleAddComment = async () => {
         if (!newComment || newRating === 0) {
@@ -160,12 +189,21 @@ const ProductDetail = () => {
                         </select>
                     </div>
                     <button 
+                        className={`add-to-wishlist-button ${wishlistAdded ? 'added' : ''}`} 
+                        onClick={handleAddToWishlist}
+                        disabled={wishlistAdded}
+                    >
+                        {wishlistAdded ? 'Added to Wishlist' : 'Add to Wishlist'}
+                    </button>
+                    
+                    <button 
                         className={`add-to-cart-button ${product.quantity_in_stock <= 0 ? 'disabled' : ''}`} 
                         onClick={handleAddToCart}
                         disabled={product.quantity_in_stock <= 0}  
                     >
                         Add to Cart
                     </button>
+                    
                 </div>
             </div>
             <div className="comments-section">
