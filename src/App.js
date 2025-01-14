@@ -12,6 +12,7 @@ import PrivateRoutes from './routes/PrivateRoutes';
 import CheckoutPage from './pages/CheckoutPage';
 import ProductManager from './pages/ProductManager';
 import SalesManager from './pages/SalesManager';
+import Wishlist from './pages/Wishlist';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                         <Route path="/category/:categoryName" element={<ProductList />} />
                         <Route path="/profile" element={<UserProfile />} />
                         <Route path="/cart" element={<CartPage />} />
+                        <Route path='/wishlist' element={<Wishlist/>} />
                         
                         {/* Sadece giriş yapmış herkes için (rol farketmez) */}
                         <Route

@@ -22,6 +22,14 @@ const Navbar = () => {
     const toggleUserModal = () => setIsUserModalOpen(!isUserModalOpen);
     const toggleCartDropdown = () => setIsCartDropdownOpen(!isCartDropdownOpen);
 
+    const handleFavIconClick = () => {
+        if (token && user) {
+            navigate('/wishlist');
+        } else {
+            toggleUserModal();
+        }
+    };
+
     const handleUserIconClick = () => {
         if (token && user) {
             console.log(user.role)
@@ -129,7 +137,7 @@ const Navbar = () => {
                             {!['Product Manager', 'Sales Manager'].includes(user.role) && user.name}
                         </span>
                     )}
-                    <FaHeart className="icon" />
+                    <FaHeart className="icon" onClick={handleFavIconClick}/>
                     <FaShoppingBag className="icon" onClick={toggleCartDropdown} />
                 </div>
             </div>

@@ -1,0 +1,109 @@
+/* Genel sayfa düzeni */
+.wishlist-page {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9; /* Arka plan rengi */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Navbar ve Footer sabit */
+}
+
+/* Navbar ve Footer arası boşluk için */
+.wishlist-container {
+    min-width: 100vh;
+    flex: 1; /* Orta kısım esnek genişlikte */
+    margin: 0 auto;
+    text-align: left;
+    background-color: #fff;
+    padding: 20px; /* İçeriği düzenli tutmak için */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Navbar ve Footer sıfırlama */
+nav, footer {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+/* Ürün listesi */
+.wishlist-items {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wishlist-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #ffffff;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.wishlist-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Ürün görseli */
+.wishlist-item-image {
+    width: 120px;
+    height: 120px;
+    margin-right: 20px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+}
+
+/* Ürün detayları */
+.wishlist-item-details {
+    flex: 1;
+}
+
+.wishlist-item-details h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.wishlist-item-details p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Kaldır butonu */
+.remove-button {
+    background-color: #ff6b6b;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.remove-button:hover {
+    background-color: #ff4c4c;
+    transform: scale(1.05);
+}
+
+/* Boş wishlist */
+.wishlist-empty-container {
+    text-align: center;
+    margin: 50px auto;
+}
+
+.empty-wishlist-image {
+    max-width: 200px;
+    margin: 20px auto;
+}
+
