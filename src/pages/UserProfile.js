@@ -5,7 +5,7 @@ import '../assets/styles/userProfile.css';
 import { useAuth } from '../contexts/AuthContexts';
 import { useNavigate } from 'react-router-dom';
 
-const UserProfile = () => {    //tokenlerin ayarlanması
+const UserProfile = () => {
     const { token, user, logout } = useAuth();
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
@@ -13,6 +13,8 @@ const UserProfile = () => {    //tokenlerin ayarlanması
     const [loadingUser, setLoadingUser] = useState(true);
     const [loadingOrders, setLoadingOrders] = useState(true);
     const [error, setError] = useState(null);
+    const [expandedOrderId, setExpandedOrderId] = useState(null);
+    const [orderDetails, setOrderDetails] = useState({});
 
     useEffect(() => {
         if (!user || !user.userIdNumber) {
@@ -44,7 +46,7 @@ const UserProfile = () => {    //tokenlerin ayarlanması
         };
 
         fetchUserData();
-    }, [token, user, navigate]); //tokeni çağırdığın nokta
+    }, [token, user, navigate]);
 
     useEffect(() => {
         if (!user || !user.userIdNumber) {
@@ -77,10 +79,61 @@ const UserProfile = () => {    //tokenlerin ayarlanması
         fetchUserOrders();
     }, [token, user]);
 
+    const fetchOrderDetails = async (orderId) => {
+        try {
+            if (orderDetails[orderId]) {
+                setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
+                return;
+            }
+
+            const response = await fetch(`http://localhost:1337/api/orders/${orderId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch order details');
+            }
+
+            const data = await response.json();
+            setOrderDetails((prev) => ({ ...prev, [orderId]: data }));
+            setExpandedOrderId(orderId);
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    };
+
+    const handleRefundRequest = async (orderId, productId) => {
+        try {
+            const response = await fetch(`http://localhost:1337/api/orders/refund/request`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: user.userIdNumber,
+                    order_id: orderId,
+                    products: [{ product_id: productId, quantity: 1 }],
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Refund request failed');
+            }
+
+            const data = await response.json();
+            alert(`Refund request successful for Product ID: ${productId}. Refund ID: ${data.results[0].refundId}`);
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    };
+
     const handleLogout = () => {
         logout();
-        console.log("User logged out");  //çıkış pop up ı
-        navigate('/'); 
+        console.log("User logged out");
+        navigate('/');
     };
 
     if (loadingUser || loadingOrders) {
@@ -106,15 +159,54 @@ const UserProfile = () => {    //tokenlerin ayarlanması
                 <div className="order-history">
                     <h2>Order History</h2>
                     {userOrders.length > 0 ? (
-                        <ul>
+                        <ul className="order-list">
                             {userOrders.map((order) => (
-                                <li key={order.order_id}>
-                                    <p><strong>Order ID:</strong> {order.order_id}</p>
-                                    <p><strong>Total Price:</strong> ${parseFloat(order.total_price).toFixed(2)}</p>
-                                    <p><strong>Delivery Address:</strong> {order.delivery_address || "Not provided"}</p>
-                                    <p><strong>Order Date:</strong> {new Date(order.created_at).toLocaleDateString()}</p>
-                                    <p><strong>Status:</strong> {order.status || "Pending"}</p>
-                                    <hr />
+                                <li key={order.order_id} className="order-item">
+                                    <div className="order-item-header">
+                                        <p className="order-id">Order ID: {order.order_id}</p>
+                                        <span
+                                            className={`order-status ${
+                                                order.status === 'processing'
+                                                    ? 'status-processing'
+                                                    : order.status === 'completed'
+                                                    ? 'status-completed'
+                                                    : 'status-cancelled'
+                                            }`}
+                                        >
+                                            {order.status}
+                                        </span>
+                                    </div>
+                                    <div className="order-item-detail">
+                                        <p><strong>Total Price:</strong> ${parseFloat(order.total_price).toFixed(2)}</p>
+                                        <p><strong>Delivery Address:</strong> {order.delivery_address || "Not provided"}</p>
+                                        <p><strong>Order Date:</strong> {new Date(order.created_at).toLocaleDateString()}</p>
+                                    </div>
+                                    <button
+                                        className="view-order-details-button"
+                                        onClick={() => fetchOrderDetails(order.order_id)}
+                                    >
+                                        {expandedOrderId === order.order_id ? "Hide Details" : "View Order Details"}
+                                    </button>
+                                    {expandedOrderId === order.order_id && orderDetails[order.order_id] && (
+                                        <div className="order-details">
+                                            <h3>Order Details</h3>
+                                            <ul>
+                                                {orderDetails[order.order_id].items.map((item) => (
+                                                    <li key={item.product_id}>
+                                                        {item.product_name} - Quantity: {item.quantity}, Price: ${parseFloat(item.price).toFixed(2)}
+                                                        <button
+                                                            className="refund-button"
+                                                            onClick={() =>
+                                                                handleRefundRequest(order.order_id, item.product_id)
+                                                            }
+                                                        >
+                                                            Request Refund
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
                                 </li>
                             ))}
                         </ul>
@@ -128,8 +220,5 @@ const UserProfile = () => {    //tokenlerin ayarlanması
         </div>
     );
 };
-
-
-
 
 export default UserProfile;

@@ -1,46 +1,133 @@
-.user-profile-page {
-    max-width: 100%;
-    margin: 0 auto;
+/* userProfile.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
 }
 
 .user-profile-container {
-    background-color: #fff;
-    padding: 100px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .profile-title {
-    font-size: 2rem;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
     margin-bottom: 20px;
-    color: #333;
 }
 
-.profile-details, .order-history {
-    margin-bottom: 30px;
+.profile-details {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
 }
 
-.profile-details h2, .order-history h2 {
-    font-size: 1.5rem;
-    color: #007bff;
-    margin-bottom: 10px;
+.profile-details p {
+    font-size: 14px;
+    margin: 8px 0;
 }
 
-.profile-details p, .order-history li {
-    font-size: 1rem;
-    color: #555;
-    margin: 5px 0;
+.order-history {
+    margin-top: 20px;
+}
+
+.order-history h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.order-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.order-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: white;
+    transition: transform 0.3s ease-in-out;
+}
+
+.order-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.order-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-id {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.order-status {
+    padding: 5px 10px;
+    font-size: 12px;
+    color: white;
+    border-radius: 5px;
+}
+
+.status-processing {
+    background-color: #f0ad4e;
+}
+
+.status-completed {
+    background-color: #5cb85c;
+}
+
+.status-cancelled {
+    background-color: #d9534f;
+}
+
+.order-item-detail {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.refund-button {
+    display: inline-block;
+    background-color: #ff5c5c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.refund-button:hover {
+    background-color: #e60000;
 }
 
 .logout-button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
     background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease-in-out;
 }
 
 .logout-button:hover {
