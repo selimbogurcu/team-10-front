@@ -97,7 +97,7 @@ const CheckoutPage = () => {   //giriş bilgileri
         };
     
         try {
-            
+            // Sipariş oluştur
             const response = await fetch('http://localhost:1337/api/orders', {
                 method: 'POST',
                 headers: {
@@ -113,8 +113,8 @@ const CheckoutPage = () => {   //giriş bilgileri
             const data = await response.json();
             alert(`Order placed successfully! Order ID: ${data.orderId}`);
     
-            
-            const pdfResponse = await fetch(`http://localhost:1337/api/orders/${data.orderId}/sendPDF`, {
+            // PDF talep et
+            const pdfResponse = await fetch(`http://localhost:1337/api/orders/${data.orderId}/sendpdf`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -125,13 +125,15 @@ const CheckoutPage = () => {   //giriş bilgileri
                 throw new Error('Failed to send order PDF.');
             }
     
-            const pdfData = await pdfResponse.json();
-            alert('Order PDF sent successfully!');
-            console.log('PDF sent:', pdfData);
+            // PDF yanıtını blob olarak al
+            const pdfBlob = await pdfResponse.blob();
+            const fileURL = URL.createObjectURL(pdfBlob);
     
-            
-            clearCart();
+            // PDF'i yeni bir sekmede aç
+            window.open(fileURL);
     
+            alert('Order PDF generated successfully!');
+            clearCart(); // Sepeti temizle
         } catch (error) {
             console.error('Error placing order or sending PDF:', error);
             alert('An error occurred while processing your order.');
