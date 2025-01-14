@@ -13,6 +13,7 @@ const Wishlist = () => {
     const navigate = useNavigate(); // Navigation için hook
 
     useEffect(() => {
+        console.log(user)
         const fetchWishlist = async () => {
             try {
                 if (!user) throw new Error('You must be logged in to view your wishlist.');
@@ -37,20 +38,27 @@ const Wishlist = () => {
 
     const handleRemoveFromWishlist = async (productId) => {
         try {
-            const response = await fetch(`http://localhost:1337/api/wishlists/${productId}`, {
+            const requestBody = { user_id: user.userIdNumber, product_id: productId };
+    
+            const response = await fetch(`http://localhost:1337/api/wishlists`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ user_id: user.userId }),
+                body: JSON.stringify(requestBody),
             });
-            if (!response.ok) throw new Error('Failed to remove item from wishlist');
-
+    
+            if (!response.ok) {
+                throw new Error('Failed to remove item from wishlist');
+            }
+    
             setWishlistItems((prevItems) => prevItems.filter(item => item.product_id !== productId));
         } catch (err) {
             alert(`Error: ${err.message}`);
         }
     };
+    
+    
 
     const handleProductClick = (productId) => {
         navigate(`/product/${productId}`); // Ürün sayfasına yönlendirme

@@ -84,22 +84,33 @@ const ProductDetail = () => {
             }
     
             if (wishlistAdded) {
-                // Wishlist'ten çıkar
-                const response = await fetch(`http://localhost:1337/api/wishlists/${wishlistId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
+                try {
+                    // Wishlist'ten çıkar
+                    const requestBody = {
                         user_id: user.userIdNumber,
                         product_id: productId,
-                    }),
-                });
-    
-                if (!response.ok) throw new Error('Failed to remove item from wishlist');
-                setWishlistAdded(false);
-                alert(`${product.name} removed from your wishlist.`);
-            } else {
+                    };
+            
+                    const response = await fetch(`http://localhost:1337/api/wishlists`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestBody),
+                    });
+            
+                    if (!response.ok) {
+                        throw new Error('Failed to remove item from wishlist');
+                    }
+            
+                    setWishlistAdded(false);
+                    alert(`${product.name} removed from your wishlist.`);
+                } catch (error) {
+                    console.error('Error:', error.message);
+                    alert(`An error occurred: ${error.message}`);
+                }
+            }
+             else {
                 // Wishlist'e ekle
                 const response = await fetch('http://localhost:1337/api/wishlists/', {
                     method: 'POST',
@@ -211,9 +222,8 @@ const ProductDetail = () => {
                     <button 
                         className={`add-to-wishlist-button ${wishlistAdded ? 'added' : ''}`}
                         onClick={handleAddToWishlist}
-                        disabled={wishlistAdded}
                     >
-                        {wishlistAdded ? ' Added to Wishlist' : ' Add to Wishlist'}
+                        {wishlistAdded ? ' Remove to Wishlist' : ' Add to Wishlist'}
                     </button>
 
                     <button 
