@@ -124,7 +124,7 @@ const ProductManager = () => {
   // ================== DELIVERIES ======================
   const fetchDeliveryList = async () => {
     try {
-      const response = await axios.get('http://localhost:1337/api/product-manager/delivery-list');
+      const response = await axios.get('http://localhost:1337/api/orders');
       setDeliveryList(response.data);
     } catch (error) {
       console.error('Error fetching delivery list:', error);
@@ -367,9 +367,13 @@ const ProductManager = () => {
                 <tr>
                   <th>Order ID</th>
                   <th>Customer Name</th>
+                  <th>Delivery Adresss</th>
+                  <th>Product ID</th>
                   <th>Product Name</th>
+                  <th>Quantity</th>
+                  <th>Item Price</th>
+                  <th>Total Price</th>
                   <th>Status</th>
-                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -377,7 +381,12 @@ const ProductManager = () => {
                   <tr key={delivery.order_id}>
                     <td>{delivery.order_id}</td>
                     <td>{delivery.customer_name}</td>
+                    <td>{delivery.delivery_address}</td>
+                    <td>{delivery.product_id}</td>
                     <td>{delivery.product_name}</td>
+                    <td>{delivery.quantity}</td>
+                    <td>{delivery.item_price}</td>
+                    <td>{delivery.total_price}</td>
                     <td>
                       <select
                         value={delivery.delivery_status}
@@ -389,11 +398,6 @@ const ProductManager = () => {
                         <option value="in-transit">In Transit</option>
                         <option value="delivered">Delivered</option>
                       </select>
-                    </td>
-                    <td>
-                      <button onClick={() => updateDeliveryStatus(delivery.order_id, delivery.delivery_status)}>
-                        Update
-                      </button>
                     </td>
                   </tr>
                 ))}
