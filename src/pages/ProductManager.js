@@ -42,12 +42,15 @@ const ProductManager = () => {
     price: '',
     warranty_status: '',
     distributor_info: '',
-    category_id: '',
     sizes: '',
     photo_url: '',
     popularity: 0
   });
   const [editingProduct, setEditingProduct] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); // Search query state
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
 
   useEffect(() => {
     if (activeTab === 'categories') fetchCategories();
@@ -209,6 +212,7 @@ const ProductManager = () => {
     } catch (error) {
       console.error('Error adding stock:', error);
     }
+    fetchProductDetails()
   };
 
   // ================== PRODUCTS (YENİ) ======================
@@ -284,6 +288,19 @@ const ProductManager = () => {
       console.error('Error deleting product:', error);
     }
   };
+
+  const fetchProductDetails = async (productId) => {
+    try {
+      const productResponse = await fetch(`http://localhost:1337/api/products/${productId}`);
+      if (!productResponse.ok) throw new Error('Failed to fetch product details');
+      const productData = await productResponse.json();
+      setSelectedProduct(productData); // Ürün bilgilerini state'e kaydedin
+    } catch (error) {
+      console.error('Error fetching product details:', error);
+    }
+  };
+  
+  
 
   // ================== Sekmeye Göre Render ======================
   const renderContent = () => {
@@ -398,32 +415,48 @@ const ProductManager = () => {
             </ul>
           </div>
         );
-      case 'stocks':
-        return (
-          <div>
-            <h2>Manage Stocks</h2>
-            <input
-              type="text"
-              value={newStock.productId}
-              onChange={(e) => setNewStock({ ...newStock, productId: e.target.value })}
-              placeholder="Product ID"
-            />
-            <input
-              type="number"
-              value={newStock.quantity}
-              onChange={(e) => setNewStock({ ...newStock, quantity: e.target.value })}
-              placeholder="Quantity"
-            />
-            <button onClick={handleAddStock}>Add Stock</button>
-            <ul>
-              {stocks.map((stock) => (
-                <li key={stock.product_id}>
-                  <strong>Product ID:</strong> {stock.product_id}, <strong>Quantity:</strong> {stock.quantity}
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
+        case 'stocks':
+          return (
+            <div>
+              <h2>Manage Stocks</h2>
+              <input
+                type="text"
+                value={newStock.productId}
+                onChange={(e) => {
+                  const productId = e.target.value;
+                  setNewStock({ ...newStock, productId });
+                  fetchProductDetails(productId); // Ürünü getirin
+                }}
+                placeholder="Product ID"
+              />
+              <input
+                type="number"
+                value={newStock.quantity}
+                onChange={(e) => setNewStock({ ...newStock, quantity: e.target.value })}
+                placeholder="Quantity"
+              />
+              <button onClick={handleAddStock}>Add Stock</button>
+        
+              {/* Seçilen Ürün Bilgileri */}
+              {selectedProduct && (
+                <div>
+                  <h3>Selected Product:</h3>
+                  <p><strong>Name:</strong> {selectedProduct.name}</p>
+                  <p><strong>Model:</strong> {selectedProduct.model}</p>
+                  <p><strong>Current Stock:</strong> {selectedProduct.quantity_in_stock}</p>
+                </div>
+              )}
+        
+              {/* Stok Listesi */}
+              <ul>
+                {stocks.map((stock) => (
+                  <li key={stock.product_id}>
+                    <strong>Product ID:</strong> {stock.product_id}, <strong>Quantity:</strong> {stock.quantity}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );        
       // ------------------ YENİ PRODUCTS SEKMESİ -------------------
       case 'products':
         return (
