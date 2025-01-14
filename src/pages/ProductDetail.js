@@ -74,6 +74,39 @@ const ProductDetail = () => {
         alert(`${product.name} added to the cart!`);
     };
 
+    const handleAddReview = async () => {
+        if (!newComment || newRating === 0) {
+            alert('Please provide both a comment and a rating.');
+            return;
+        }
+    
+        try {
+            const response = await fetch('http://localhost:1337/api/comments/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: user.userIdNumber,
+                    product_id: productId,
+                    rating: newRating,
+                    content: newComment,
+                }),
+            });
+    
+            if (!response.ok) throw new Error('Failed to add review');
+    
+            setNewRating(0);
+            setNewComment('');
+            alert('Review submitted successfully! Comment will appear once approved.');
+    
+            // Add the rating to the local state for immediate feedback
+            setAverageRating((prev) => ((prev * comments.length + newRating) / (comments.length + 1)).toFixed(1));
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    };
+    
     const handleAddComment = async () => {
         if (!newComment || newRating === 0) {
             alert('Please provide a comment and a rating');
