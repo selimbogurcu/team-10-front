@@ -16,7 +16,7 @@ const Wishlist = () => {
         const fetchWishlist = async () => {
             try {
                 if (!user) throw new Error('You must be logged in to view your wishlist.');
-                const response = await fetch(`http://localhost:1337/api/wishlists/user/${user.userIdNumber-16}`);
+                const response = await fetch(`http://localhost:1337/api/wishlists/user/${user.userIdNumber}`);
                 if (!response.ok) throw new Error('Failed to fetch wishlist items');
 
                 const data = await response.json();
