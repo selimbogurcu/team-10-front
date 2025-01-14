@@ -37,38 +37,3 @@
   }
 }
 
-
-/* productDetail.css */
-
-/* Wishlist butonunun temel stili */
-.add-to-wishlist-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: #ccc; /* Gri renk başlangıç için */
-  transition: color 0.3s ease, transform 0.3s ease;
-  margin-left: 10px;
-}
-
-.add-to-wishlist-button:hover {
-  color: #e63946; /* Kalbin hover üzerindeki rengi (kırmızı) */
-  transform: scale(1.2); /* Hover sırasında büyütme efekti */
-}
-
-.add-to-wishlist-button.added {
-  color: #e63946; /* Wishlist'e eklendiğinde kalp rengi */
-}
-
-/* Kalp ikonu */
-.add-to-wishlist-button::before {
-  content: '♥'; /* Unicode kalp karakteri */
-  font-family: Arial, sans-serif;
-}
-
-/* Ekleme durumunda tıklama engelleme */
-.add-to-wishlist-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6; /* Tıklanamaz durumu için görsel efekt */
-}
-

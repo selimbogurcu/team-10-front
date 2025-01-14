@@ -79,28 +79,48 @@ const ProductDetail = () => {
     const handleAddToWishlist = async () => {
         try {
             if (!user) {
-                alert('You need to log in to add items to your wishlist.');
+                alert('You need to log in to manage your wishlist.');
                 return;
             }
-            
-            const response = await fetch('http://localhost:1337/api/wishlists/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_id: user.userIdNumber,
-                    product_id: productId,
-                }),
-            });
-
-            if (!response.ok) throw new Error('Failed to add item to wishlist');
-            setWishlistAdded(true);
-            alert(`${product.name} added to your wishlist!`);
+    
+            if (wishlistAdded) {
+                // Wishlist'ten çıkar
+                const response = await fetch(`http://localhost:1337/api/wishlists/${wishlistId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: user.userIdNumber,
+                        product_id: productId,
+                    }),
+                });
+    
+                if (!response.ok) throw new Error('Failed to remove item from wishlist');
+                setWishlistAdded(false);
+                alert(`${product.name} removed from your wishlist.`);
+            } else {
+                // Wishlist'e ekle
+                const response = await fetch('http://localhost:1337/api/wishlists/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: user.userIdNumber,
+                        product_id: productId,
+                    }),
+                });
+    
+                if (!response.ok) throw new Error('Failed to add item to wishlist');
+                setWishlistAdded(true);
+                alert(`${product.name} added to your wishlist!`);
+            }
         } catch (err) {
             alert(`Error: ${err.message}`);
         }
     };
+    
 
 
     const handleAddComment = async () => {
@@ -189,13 +209,13 @@ const ProductDetail = () => {
                         </select>
                     </div>
                     <button 
-                        className={`add-to-wishlist-button ${wishlistAdded ? 'added' : ''}`} 
+                        className={`add-to-wishlist-button ${wishlistAdded ? 'added' : ''}`}
                         onClick={handleAddToWishlist}
                         disabled={wishlistAdded}
                     >
-                        {wishlistAdded ? 'Added to Wishlist' : 'Add to Wishlist'}
+                        {wishlistAdded ? ' Added to Wishlist' : ' Add to Wishlist'}
                     </button>
-                    
+
                     <button 
                         className={`add-to-cart-button ${product.quantity_in_stock <= 0 ? 'disabled' : ''}`} 
                         onClick={handleAddToCart}
