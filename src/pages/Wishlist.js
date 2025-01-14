@@ -37,7 +37,7 @@ const Wishlist = () => {
 
     const handleRemoveFromWishlist = async (productId) => {
         try {
-            const response = await fetch(`http://localhost:1337/api/wishlist/${productId}`, {
+            const response = await fetch(`http://localhost:1337/api/wishlists/${productId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -81,10 +81,11 @@ const Wishlist = () => {
                                     onClick={() => handleProductClick(item.product_id)} // Tıklama eventi
                                     style={{ cursor: 'pointer' }} // Görsel olarak tıklanabilirliği artırmak için
                                 >
-                                    <img src={item.photo_url || '/placeholder.jpg'} alt={item.product_name} className="wishlist-item-image" />
+                                    <img src={item.product_image || '/placeholder.jpg'} alt={item.product_name} className="wishlist-item-image" />
                                     <div className="wishlist-item-details">
                                         <h2>{item.product_name}</h2>
-                                        <p>Price: ₺{typeof item.price === "number" ? item.price.toFixed(2) : "N/A"}</p>
+                                        <p>Price: ₺{item.product_price}</p>
+                                        {console.log(item.product_price)}
                                         <button
                                             className="remove-button"
                                             onClick={(e) => {
