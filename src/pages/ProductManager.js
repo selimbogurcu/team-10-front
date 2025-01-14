@@ -227,7 +227,7 @@ const ProductManager = () => {
 
   const handleAddProduct = async () => {
     try {
-      await axios.post('http://localhost:1337/api/product-manager/product', newProduct);
+      await axios.post('http://localhost:1337/api/products/', newProduct);
       // Başarılı ekleme sonrası formu sıfırla ve listeyi güncelle
       setNewProduct({
         name: '',
@@ -244,6 +244,7 @@ const ProductManager = () => {
         popularity: 0
       });
       fetchAllProducts();
+      alert('New product added successfully!');
     } catch (error) {
       console.error('Error adding product:', error);
     }
